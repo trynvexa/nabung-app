@@ -3,13 +3,16 @@ import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { ArrowUpRight, ShieldCheck, Sparkles } from '@lucide/vue'
 import { useAppStore } from '@/stores/app'
+import { useUiStore } from '@/stores/ui'
 import { navGroups, settingsNav } from '@/lib/navigation'
 import { initials } from '@/lib/format'
 import BrandMark from '@/components/brand/BrandMark.vue'
 
 const route = useRoute()
 const appStore = useAppStore()
+const ui = useUiStore()
 const profileName = computed(() => appStore.data.settings.profileName)
+const profileAvatar = computed(() => appStore.data.settings.profileAvatar)
 const userInitials = computed(() => initials(profileName.value))
 
 function isActive(path: string): boolean {
@@ -76,14 +79,23 @@ function isActive(path: string): boolean {
           <path d="M18 112C38 84 60 60 98 41" stroke="currentColor" stroke-width="2" />
           <path d="M46 80c-18-2-28-13-30-32 18 2 28 13 30 32ZM69 56c-16-8-21-22-16-40 16 8 21 21 16 40ZM90 38c-10-12-10-24-1-38" fill="currentColor" fill-opacity=".55" />
         </svg>
-        <div class="relative flex items-center gap-2">
-          <span class="flex size-8 items-center justify-center rounded-[10px] bg-surface/80 text-lavender shadow-sm">
-            <Sparkles :size="15" />
-          </span>
-          <p class="text-xs font-black text-ink">Kecil-kecil, lama-lama besar.</p>
+        <div class="relative flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex size-8 items-center justify-center rounded-[10px] bg-surface/80 text-lavender shadow-sm">
+              <Sparkles :size="15" />
+            </span>
+            <p class="text-xs font-black text-ink">Panduan Aplikasi</p>
+          </div>
+          <button
+            type="button"
+            class="rounded-lg bg-surface px-2 py-1 text-[10px] font-black text-primary shadow-xs hover:bg-surface-2 transition-colors"
+            @click="ui.openTour()"
+          >
+            Buka
+          </button>
         </div>
         <p class="relative mt-2 text-[11px] font-medium leading-relaxed text-ink-soft/80">
-          Sisihkan sedikit hari ini. Konsistensi kecil akan terasa besar nanti.
+          Ketahui cara menggunakan fitur target, setoran foto, dompet, dan keamanan Tabungin.
         </p>
       </div>
     </nav>
@@ -95,9 +107,10 @@ function isActive(path: string): boolean {
         :class="isActive(settingsNav.to) ? 'bg-primary-soft' : ''"
       >
         <span
-          class="flex size-10 shrink-0 items-center justify-center rounded-[13px] bg-primary-soft text-[13px] font-black text-primary-strong ring-1 ring-primary/15"
+          class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-[13px] bg-primary-soft text-[13px] font-black text-primary-strong ring-1 ring-primary/15"
         >
-          {{ userInitials }}
+          <img v-if="profileAvatar" :src="profileAvatar" class="size-full object-cover" alt="Avatar" />
+          <span v-else>{{ userInitials }}</span>
         </span>
         <span class="min-w-0 flex-1">
           <span class="block truncate text-[13px] font-extrabold text-ink">{{ profileName }}</span>

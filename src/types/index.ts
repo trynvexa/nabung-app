@@ -105,6 +105,7 @@ export interface AppSettings {
   theme: ThemeMode
   hideAmounts: boolean
   profileName: string
+  profileAvatar?: string
 }
 
 export interface AppData {

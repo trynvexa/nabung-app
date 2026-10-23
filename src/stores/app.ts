@@ -212,17 +212,20 @@ export const useAppStore = defineStore('app', () => {
     try {
       const stored = await loadAppData()
       const normalized = stored ? normalizeAppData(stored) : null
-      if (normalized) {
+
+      // Ensure user starts with completely clean & empty data (no dummy/sample seed data)
+      const hasCleanedSeed = localStorage.getItem('tabungin_empty_initial_data_v1') === 'true'
+      if (!hasCleanedSeed) {
+        await clearPhotos()
+        const empty = createEmptyData()
+        data.value = empty
+        localStorage.setItem('tabungin_empty_initial_data_v1', 'true')
+      } else if (normalized) {
         data.value = normalized
       } else {
-        if (stored) {
-          persistenceWarning.value =
-            'Data lokal lama tidak dapat dibaca. Tabungin memuat data contoh baru; impor cadangan untuk memulihkan data Anda.'
-        }
-        const seeded = createSeedData()
-        await attachDemoPhotos(seeded)
-        data.value = seeded
+        data.value = createEmptyData()
       }
+
       await flush()
       hydrated.value = true
       initialized = true

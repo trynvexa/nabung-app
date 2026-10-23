@@ -49,6 +49,9 @@ function normalizeSettings(raw: unknown): AppSettings {
     theme: theme === 'dark' || theme === 'system' ? theme : 'light',
     hideAmounts: source.hideAmounts === true,
     profileName: safeString(source.profileName, 'Sahabat Tabungin').slice(0, 60) || 'Sahabat Tabungin',
+    profileAvatar: typeof source.profileAvatar === 'string' && source.profileAvatar.startsWith('data:image/')
+      ? source.profileAvatar
+      : undefined,
   }
 }
 

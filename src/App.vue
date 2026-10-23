@@ -10,17 +10,27 @@ import MobileNav from '@/components/layout/MobileNav.vue'
 import ToastHost from '@/components/ui/ToastHost.vue'
 import ConfirmHost from '@/components/ui/ConfirmHost.vue'
 import DepositModal from '@/components/deposits/DepositModal.vue'
+import FeatureTourModal from '@/components/ui/FeatureTourModal.vue'
 import BrandMark from '@/components/brand/BrandMark.vue'
 import BotanicalDecor from '@/components/brand/BotanicalDecor.vue'
 import AuthBackdrop from '@/components/brand/AuthBackdrop.vue'
+import { useUiStore } from '@/stores/ui'
+import { useLocalSession } from '@/composables/useLocalSession'
 
 const appStore = useAppStore()
+const ui = useUiStore()
 const route = useRoute()
+const { isSignedIn } = useLocalSession()
 const isPublic = computed(() => route.meta.public === true)
 useTheme()
 
-onMounted(() => {
-  void appStore.init()
+onMounted(async () => {
+  await appStore.init()
+  if (isSignedIn.value && localStorage.getItem('tabungin_tour_completed') !== 'true') {
+    setTimeout(() => {
+      ui.openTour()
+    }, 900)
+  }
 })
 
 async function retry(): Promise<void> {
@@ -35,7 +45,7 @@ function reloadPage(): void {
 <template>
   <div class="relative isolate min-h-dvh bg-app-gradient text-ink">
     <template v-if="isPublic">
-      <div class="relative min-h-dvh overflow-hidden bg-[#f8faef]">
+      <div class="relative min-h-dvh overflow-hidden bg-[#F4F8F3]">
         <AuthBackdrop />
         <RouterView v-slot="{ Component }">
           <Transition name="page" mode="out-in">
@@ -154,5 +164,6 @@ function reloadPage(): void {
     <ToastHost />
     <ConfirmHost />
     <DepositModal v-if="!isPublic && !appStore.loading && !appStore.fatalError" />
+    <FeatureTourModal />
   </div>
 </template>

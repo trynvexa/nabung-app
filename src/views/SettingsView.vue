@@ -4,6 +4,10 @@ import type { Component } from 'vue'
 import {
   AlertTriangle,
   CheckCircle2,
+  Cloud,
+  CloudDownload,
+  CloudOff,
+  CloudUpload,
   Database,
   Download,
   Eye,
@@ -28,6 +32,12 @@ import type { ThemeMode } from '@/types'
 import { useAppStore } from '@/stores/app'
 import { useUiStore } from '@/stores/ui'
 import { useTheme } from '@/composables/useTheme'
+import {
+  fetchUserAppDataFromSupabase,
+  getSupabaseUser,
+  isSupabaseConfigured,
+  syncAppDataToSupabase,
+} from '@/lib/supabase'
 import {
   backupFilename,
   buildBackup,
@@ -356,6 +366,61 @@ async function resetEmpty(): Promise<void> {
   }
 }
 
+const cloudConfigured = ref(isSupabaseConfigured())
+const cloudSyncing = ref(false)
+const lastSyncTime = ref<string | null>(localStorage.getItem('tabungin_last_cloud_sync'))
+
+async function syncToCloud(): Promise<void> {
+  if (!cloudConfigured.value || cloudSyncing.value) return
+  cloudSyncing.value = true
+  try {
+    const user = await getSupabaseUser()
+    const userId = user?.id || '00000000-0000-0000-0000-000000000000'
+    const ok = await syncAppDataToSupabase(userId, appStore.data)
+    if (ok) {
+      const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      lastSyncTime.value = now
+      localStorage.setItem('tabungin_last_cloud_sync', now)
+      ui.notify('Data berhasil disinkronkan ke Supabase Cloud!', { title: 'Sinkronisasi berhasil' })
+    } else {
+      ui.notify('Gagal menyinkronkan data ke Supabase. Periksa izin basis data.', { variant: 'error' })
+    }
+  } catch (err: any) {
+    ui.notify(err.message || 'Terjadi kesalahan sinkronisasi.', { variant: 'error' })
+  } finally {
+    cloudSyncing.value = false
+  }
+}
+
+async function restoreFromCloud(): Promise<void> {
+  if (!cloudConfigured.value || cloudSyncing.value) return
+  const confirmed = await ui.askConfirm({
+    title: 'Pulihkan data dari Cloud?',
+    message: 'Data tabungan lokal di perangkat ini akan digantikan dengan data yang ada di Supabase Cloud.',
+    confirmLabel: 'Pulihkan',
+    cancelLabel: 'Batal',
+  })
+  if (!confirmed) return
+
+  cloudSyncing.value = true
+  try {
+    const user = await getSupabaseUser()
+    const userId = user?.id || '00000000-0000-0000-0000-000000000000'
+    const cloudData = await fetchUserAppDataFromSupabase(userId)
+    if (cloudData && (cloudData.wallets.length > 0 || cloudData.deposits.length > 0 || cloudData.targets.length > 0)) {
+      appStore.replaceData(cloudData)
+      await appStore.flush()
+      ui.notify('Data berhasil dipulihkan dari Supabase Cloud!', { title: 'Pemulihan berhasil' })
+    } else {
+      ui.notify('Belum ada data cadangan di Supabase untuk akun ini.', { variant: 'info' })
+    }
+  } catch (err: any) {
+    ui.notify(err.message || 'Gagal memulihkan dari Cloud.', { variant: 'error' })
+  } finally {
+    cloudSyncing.value = false
+  }
+}
+
 onMounted(() => {
   void refreshStorage()
 })
@@ -517,6 +582,64 @@ onMounted(() => {
         </div>
 
         <div class="p-5 sm:p-6">
+          <!-- Cloud Sync Card (Supabase) -->
+          <div
+            class="mb-4 rounded-2xl border p-4 transition-colors"
+            :class="cloudConfigured ? 'border-primary/20 bg-primary-soft/40' : 'border-line bg-surface-2/70'"
+          >
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-start gap-3">
+                <span
+                  class="flex size-10 shrink-0 items-center justify-center rounded-xl"
+                  :class="cloudConfigured ? 'bg-primary text-white' : 'bg-surface text-muted'"
+                >
+                  <Cloud v-if="cloudConfigured" :size="19" />
+                  <CloudOff v-else :size="19" />
+                </span>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <p class="text-xs font-extrabold text-ink">Sinkronisasi Cloud Supabase</p>
+                    <span
+                      class="rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider"
+                      :class="cloudConfigured ? 'bg-success-soft text-success' : 'bg-muted/15 text-muted'"
+                    >
+                      {{ cloudConfigured ? 'Aktif' : 'Mode Offline / Lokal' }}
+                    </span>
+                  </div>
+                  <p v-if="cloudConfigured" class="mt-1 text-[11px] leading-relaxed text-muted">
+                    Sinkronkan data tabungan, target, dan transaksi ke database cloud Supabase milikmu.
+                    <span v-if="lastSyncTime" class="block text-[10px] text-ink-soft">Terakhir sinkron: {{ lastSyncTime }}</span>
+                  </p>
+                  <p v-else class="mt-1 text-[11px] leading-relaxed text-muted">
+                    Data saat ini tersimpan 100% lokal. Untuk mengaktifkan cadangan cloud Supabase, konfigurasikan file <code class="rounded bg-surface px-1 py-0.5 text-[10px] font-bold">.env</code>.
+                  </p>
+                </div>
+              </div>
+              <div v-if="cloudConfigured" class="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm"
+                  :disabled="cloudSyncing"
+                  @click="restoreFromCloud"
+                >
+                  <LoaderCircle v-if="cloudSyncing" :size="14" class="animate-spin" />
+                  <CloudDownload v-else :size="14" />
+                  Tarik Data
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  :disabled="cloudSyncing"
+                  @click="syncToCloud"
+                >
+                  <LoaderCircle v-if="cloudSyncing" :size="14" class="animate-spin" />
+                  <CloudUpload v-else :size="14" />
+                  Unggah Data
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="rounded-2xl border border-primary/15 bg-primary-soft/50 p-4">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div class="flex items-start gap-3">

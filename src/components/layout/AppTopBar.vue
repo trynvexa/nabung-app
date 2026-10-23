@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Bell, CalendarDays, Moon, Plus, Settings, ShieldCheck, Sun } from '@lucide/vue'
+import { ArrowLeft, Bell, CalendarDays, Moon, Plus, Settings, ShieldCheck, Sparkles, Sun } from '@lucide/vue'
 import { useAppStore } from '@/stores/app'
 import { useUiStore } from '@/stores/ui'
 import { useTheme } from '@/composables/useTheme'
@@ -17,6 +17,7 @@ const router = useRouter()
 const { isDark, toggleTheme } = useTheme()
 
 const profileName = computed(() => appStore.data.settings.profileName)
+const profileAvatar = computed(() => appStore.data.settings.profileAvatar)
 const userInitials = computed(() => initials(profileName.value))
 const today = new Date()
 const isHome = computed(() => route.path === '/')
@@ -66,6 +67,16 @@ function goBack(): void {
       </RouterLink>
 
       <div class="flex items-center gap-2">
+        <button
+          v-if="!isProfile"
+          type="button"
+          class="relative flex size-9 items-center justify-center rounded-full border border-[#dce6d2] bg-white/70 text-[#5e705c] transition-colors hover:bg-white dark:border-line dark:bg-surface-2"
+          aria-label="Buka panduan fitur"
+          title="Panduan fitur"
+          @click="ui.openTour()"
+        >
+          <Sparkles :size="16" class="text-lavender" />
+        </button>
         <RouterLink
           v-if="!isNotificationPage && !isProfile"
           to="/notifikasi"
@@ -86,10 +97,11 @@ function goBack(): void {
         <RouterLink
           v-else-if="!isHome && !isCorePage"
           to="/profil"
-          class="flex size-9 items-center justify-center rounded-[12px] bg-primary-soft text-[11px] font-black text-primary-strong ring-1 ring-primary/20"
+          class="flex size-9 items-center justify-center overflow-hidden rounded-[12px] bg-primary-soft text-[11px] font-black text-primary-strong ring-1 ring-primary/20"
           :aria-label="`Buka profil ${profileName}`"
         >
-          {{ userInitials }}
+          <img v-if="profileAvatar" :src="profileAvatar" class="size-full object-cover" alt="Foto profil" />
+          <span v-else>{{ userInitials }}</span>
         </RouterLink>
       </div>
     </div>
@@ -110,6 +122,15 @@ function goBack(): void {
       </div>
 
       <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="icon-btn"
+          aria-label="Buka panduan fitur"
+          title="Panduan fitur"
+          @click="ui.openTour()"
+        >
+          <Sparkles :size="17" class="text-lavender" />
+        </button>
         <RouterLink
           to="/notifikasi"
           class="relative icon-btn"
@@ -133,10 +154,11 @@ function goBack(): void {
         </button>
         <RouterLink
           to="/profil"
-          class="flex size-10 items-center justify-center rounded-[14px] bg-primary-soft text-[12px] font-black text-primary-strong ring-1 ring-primary/20 transition-transform hover:scale-105"
+          class="flex size-10 items-center justify-center overflow-hidden rounded-[14px] bg-primary-soft text-[12px] font-black text-primary-strong ring-1 ring-primary/20 transition-transform hover:scale-105"
           :aria-label="`Buka profil ${profileName}`"
         >
-          {{ userInitials }}
+          <img v-if="profileAvatar" :src="profileAvatar" class="size-full object-cover" alt="Foto profil" />
+          <span v-else>{{ userInitials }}</span>
         </RouterLink>
       </div>
     </div>

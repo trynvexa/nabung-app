@@ -36,6 +36,7 @@ export const useUiStore = defineStore('ui', () => {
   const depositOpen = ref(false)
   const depositEditId = ref<string | null>(null)
   const depositTargetId = ref<string | undefined>(undefined)
+  const tourOpen = ref(false)
 
   let confirmResolver: ((value: boolean) => void) | null = null
 
@@ -97,17 +98,28 @@ export const useUiStore = defineStore('ui', () => {
     depositTargetId.value = undefined
   }
 
+  function openTour(): void {
+    tourOpen.value = true
+  }
+
+  function closeTour(): void {
+    tourOpen.value = false
+  }
+
   return {
     toasts,
     confirmState,
     depositOpen,
     depositEditId,
     depositTargetId,
+    tourOpen,
     notify,
     dismissToast,
     askConfirm,
     resolveConfirm,
     openDeposit,
     closeDeposit,
+    openTour,
+    closeTour,
   }
 })

@@ -1,7 +1,7 @@
 import type { PhotoMeta, PhotoRecord } from '@/types'
 import { uid } from './id'
+import { validateImageFile } from './security'
 
-const MAX_ORIGINAL_BYTES = 25 * 1024 * 1024
 const MAX_DIMENSION = 1400
 
 export interface PreparedImage {
@@ -31,11 +31,9 @@ function loadImage(file: File): Promise<HTMLImageElement> {
 }
 
 export async function prepareImage(file: File): Promise<PreparedImage> {
-  if (!file.type.startsWith('image/')) {
-    throw new Error('Pilih berkas foto dengan format gambar.')
-  }
-  if (file.size > MAX_ORIGINAL_BYTES) {
-    throw new Error('Foto terlalu besar. Maksimum 25 MB sebelum dikompres.')
+  const securityCheck = await validateImageFile(file)
+  if (!securityCheck.ok) {
+    throw new Error(securityCheck.error || 'Berkas foto tidak memenuhi standar keamanan.')
   }
 
   const image = await loadImage(file)
