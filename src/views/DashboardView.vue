@@ -35,6 +35,7 @@ import PhotoThumb from '@/components/ui/PhotoThumb.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import CashflowBarChart from '@/components/charts/CashflowBarChart.vue'
 import DepositDetailModal from '@/components/deposits/DepositDetailModal.vue'
+import SavingsCat from '@/components/brand/SavingsCat.vue'
 import { findCategory } from '@/lib/categories'
 
 const appStore = useAppStore()
@@ -234,36 +235,26 @@ async function markReminderPaid(billId: string): Promise<void> {
 
     <div class="mt-6 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
       <section
-        class="animate-rise hero-surface relative overflow-hidden rounded-[26px] p-6 text-white shadow-[0_26px_60px_-32px_rgba(60,92,210,0.8)] sm:p-7"
+        class="animate-rise hero-surface relative overflow-hidden rounded-[26px] p-6 text-white shadow-[0_26px_60px_-32px_rgba(47,80,55,0.7)] sm:p-7"
         style="--delay: 60ms"
         aria-label="Ringkasan total tabungan"
       >
         <div class="pointer-events-none absolute -right-12 -top-16 size-64 rounded-full border border-white/10" />
         <div class="pointer-events-none absolute -right-2 top-2 size-40 rounded-full border border-white/10" />
         <svg
-          class="pointer-events-none absolute bottom-0 right-4 hidden h-[190px] w-[230px] opacity-80 sm:block"
-          viewBox="0 0 230 190"
+          class="pointer-events-none absolute -left-8 bottom-0 h-48 w-48 text-white/10"
+          viewBox="0 0 200 200"
           fill="none"
           aria-hidden="true"
         >
-          <path d="M10 158H220" stroke="white" stroke-opacity="0.14" stroke-dasharray="3 7" />
-          <rect x="38" y="112" width="26" height="46" rx="9" fill="white" fill-opacity="0.14" />
-          <rect x="82" y="88" width="26" height="70" rx="9" fill="white" fill-opacity="0.2" />
-          <rect x="126" y="65" width="26" height="93" rx="9" fill="white" fill-opacity="0.27" />
-          <rect x="170" y="38" width="26" height="120" rx="9" fill="white" fill-opacity="0.38" />
-          <path
-            d="M51 100C83 92 108 76 139 56C160 43 176 33 195 25"
-            stroke="white"
-            stroke-opacity="0.75"
-            stroke-width="2.5"
-            stroke-linecap="round"
-            stroke-dasharray="5 8"
-          />
-          <circle cx="195" cy="25" r="5.5" fill="white" />
-          <circle cx="195" cy="25" r="11" stroke="white" stroke-opacity="0.3" />
+          <path d="M14 196C52 142 77 93 95 30" stroke="currentColor" stroke-width="2" />
+          <path d="M58 146c-36-6-56-28-59-65 36 6 56 28 59 65ZM88 91c-32-13-44-38-38-72 32 13 44 38 38 72Z" fill="currentColor" />
         </svg>
+        <SavingsCat
+          class="pointer-events-none absolute -bottom-2 -right-7 hidden w-[255px] sm:block"
+        />
 
-        <div class="relative z-10">
+        <div class="relative z-10 sm:max-w-[calc(100%-205px)]">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-bold backdrop-blur-sm">
               <PiggyBank :size="13" />
@@ -280,7 +271,7 @@ async function markReminderPaid(billId: string): Promise<void> {
             </button>
           </div>
 
-          <p class="mt-4 text-[38px] font-extrabold leading-none tracking-[-0.045em] sm:text-[46px]">
+          <p class="mt-4 text-[38px] font-black leading-none tracking-[-0.05em] sm:text-[46px]">
             <AnimatedNumber :value="appStore.totalSaved" :hide="hideAmounts" />
           </p>
           <p class="mt-2.5 max-w-md text-[13px] leading-relaxed text-white/70">
@@ -298,7 +289,7 @@ async function markReminderPaid(billId: string): Promise<void> {
             </div>
             <div class="h-2 overflow-hidden rounded-full bg-white/15">
               <div
-                class="h-full rounded-full bg-white/90 transition-[width] duration-[900ms] ease-out"
+                class="h-full rounded-full bg-[#F2CC74] transition-[width] duration-[900ms] ease-out"
                 :style="{ width: `${appStore.targetCommitment.percent}%` }"
               />
             </div>
@@ -307,7 +298,7 @@ async function markReminderPaid(billId: string): Promise<void> {
           <div class="mt-5 flex flex-wrap items-center gap-2">
             <button
               type="button"
-              class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-[#3F63E8] shadow-sm transition-transform hover:-translate-y-0.5"
+              class="inline-flex items-center gap-2 rounded-[13px] bg-[#FFFDF7] px-4 py-2.5 text-sm font-black text-[#3F6047] shadow-sm transition-transform hover:-translate-y-0.5"
               @click="ui.openDeposit()"
             >
               <Plus :size="16" :stroke-width="2.6" />
@@ -506,7 +497,7 @@ async function markReminderPaid(billId: string): Promise<void> {
             class="group block"
           >
             <div class="flex items-center gap-2.5">
-              <TargetIcon :name="entry.target.icon" :color="entry.progress.isComplete ? '#24AD7A' : '#5278F6'" box-size="sm" :size="17" />
+              <TargetIcon :name="entry.target.icon" :color="entry.progress.isComplete ? '#5B9563' : '#5F8563'" box-size="sm" :size="17" />
               <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between gap-2">
                   <p class="truncate text-xs font-extrabold text-ink transition-colors group-hover:text-primary">
@@ -766,7 +757,7 @@ async function markReminderPaid(billId: string): Promise<void> {
             class="flex size-7 items-center justify-center rounded-lg text-[9px] font-extrabold"
             :class="
               day.active
-                ? 'bg-success text-white'
+                ? 'bg-success text-white dark:text-[#172117]'
                 : day.today
                   ? 'border border-primary/40 bg-primary-soft text-primary'
                   : 'bg-surface-2 text-muted'

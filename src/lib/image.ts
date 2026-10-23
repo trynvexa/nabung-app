@@ -130,11 +130,11 @@ export async function createDemoReceipt(options: {
   if (!context) throw new Error('Canvas tidak tersedia.')
 
   const palettes = [
-    ['#EFF3FF', '#5278F6', '#182747'],
-    ['#F3F0FF', '#7C6CF0', '#23304F'],
-    ['#EAF8F3', '#24AD7A', '#17392E'],
+    ['#F3F1E4', '#5F8563', '#2F4132'],
+    ['#FBF1D9', '#B88A3D', '#3C4D3B'],
+    ['#EAF3E5', '#5B9563', '#285037'],
   ]
-  const [background = '#EFF3FF', accent = '#5278F6', ink = '#182747'] =
+  const [background = '#F3F1E4', accent = '#5F8563', ink = '#2F4132'] =
     palettes[options.variant % palettes.length] ?? []
 
   context.fillStyle = background
@@ -149,7 +149,7 @@ export async function createDemoReceipt(options: {
   context.fill()
 
   context.fillStyle = '#FFFFFF'
-  context.shadowColor = 'rgba(24,39,71,0.12)'
+  context.shadowColor = 'rgba(47,65,50,0.12)'
   context.shadowBlur = 34
   context.shadowOffsetY = 16
   roundRect(context, 110, 70, 680, 500, 32)
@@ -165,17 +165,17 @@ export async function createDemoReceipt(options: {
   context.fillStyle = '#FFFFFF'
   context.font = '700 26px sans-serif'
   context.textAlign = 'center'
-  context.fillText('S', 175, 160)
+  context.fillText('T', 175, 160)
 
   context.textAlign = 'left'
   context.fillStyle = ink
   context.font = '800 25px sans-serif'
-  context.fillText('SAVEZY', 220, 145)
-  context.fillStyle = '#8290A8'
+  context.fillText('TABUNGIN', 220, 145)
+  context.fillStyle = '#7F8D7B'
   context.font = '500 15px sans-serif'
-  context.fillText('BUKTI SETORAN · DOKUMENTASI PRIBADI', 220, 172)
+  context.fillText('BUKTI SETORAN · CELENGAN IMPIANMU', 220, 172)
 
-  context.strokeStyle = '#E9EDF5'
+  context.strokeStyle = '#E7E3D3'
   context.lineWidth = 2
   context.beginPath()
   context.setLineDash([8, 8])
@@ -184,7 +184,7 @@ export async function createDemoReceipt(options: {
   context.stroke()
   context.setLineDash([])
 
-  context.fillStyle = '#8290A8'
+  context.fillStyle = '#7F8D7B'
   context.font = '600 17px sans-serif'
   context.fillText('NOMINAL SETORAN', 155, 270)
   context.fillStyle = ink
@@ -199,14 +199,14 @@ export async function createDemoReceipt(options: {
     330,
   )
 
-  context.fillStyle = '#8290A8'
+  context.fillStyle = '#7F8D7B'
   context.font = '600 17px sans-serif'
   context.fillText('TUJUAN', 155, 390)
   context.fillStyle = ink
   context.font = '700 24px sans-serif'
   context.fillText(options.target, 155, 422)
 
-  context.fillStyle = '#8290A8'
+  context.fillStyle = '#7F8D7B'
   context.font = '600 17px sans-serif'
   context.fillText('TANGGAL', 155, 472)
   context.fillStyle = ink

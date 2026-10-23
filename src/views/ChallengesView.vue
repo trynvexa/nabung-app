@@ -464,7 +464,7 @@ function saveChallenge(): void {
             :key="day.key"
             class="flex size-7 flex-1 items-center justify-center rounded-lg text-[9px] font-extrabold"
             :class="[
-              day.active ? 'bg-warning text-white' : 'bg-surface-2 text-muted',
+              day.active ? 'bg-warning text-white dark:text-[#172117]' : 'bg-surface-2 text-muted',
               day.today ? 'ring-2 ring-warning/30' : '',
             ]"
             :title="day.key"
@@ -682,7 +682,7 @@ function saveChallenge(): void {
                 cell.day === null
                   ? ''
                   : cell.active
-                    ? 'bg-primary text-white shadow-[0_4px_10px_-6px_rgba(82,120,246,0.8)]'
+                    ? 'bg-primary text-white shadow-[0_4px_10px_-6px_rgba(74,111,81,0.8)] dark:text-[#172117]'
                     : 'bg-surface-2 text-ink-soft',
                 cell.today ? 'ring-2 ring-primary/30' : '',
               ]"

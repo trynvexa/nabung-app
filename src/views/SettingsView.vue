@@ -221,7 +221,7 @@ async function onImportFile(event: Event): Promise<void> {
     const sanitized = sanitizeImportedData(parsed)
     if (!sanitized) {
       ui.notify(
-        'File bukan cadangan Savezy yang valid. Pastikan file berasal dari menu Ekspor cadangan.',
+        'File bukan cadangan Tabungin yang valid. Pastikan file berasal dari menu Ekspor cadangan.',
         { title: 'Cadangan tidak dikenali', variant: 'error' },
       )
       return
@@ -305,7 +305,7 @@ async function resetWithDemo(): Promise<void> {
   const confirmed = await ui.askConfirm({
     title: 'Muat ulang data contoh?',
     message:
-      'Seluruh data saat ini dan foto bukti akan dihapus, lalu diganti dengan data contoh Savezy. Ekspor cadangan terlebih dahulu jika data ini masih kamu butuhkan.',
+      'Seluruh data saat ini dan foto bukti akan dihapus, lalu diganti dengan data contoh Tabungin. Ekspor cadangan terlebih dahulu jika data ini masih kamu butuhkan.',
     confirmLabel: 'Muat data contoh',
     cancelLabel: 'Batal',
     tone: 'danger',
@@ -391,7 +391,7 @@ onMounted(() => {
 
         <div class="mt-5 flex items-center gap-4">
           <span
-            class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary text-[17px] font-extrabold text-white shadow-[0_12px_26px_-16px_rgba(82,120,246,0.9)]"
+            class="flex size-14 shrink-0 items-center justify-center rounded-[18px] bg-primary-soft text-[17px] font-black text-primary-strong ring-1 ring-primary/15 shadow-[0_12px_26px_-18px_rgba(74,111,81,0.8)]"
           >
             {{ profileInitials }}
           </span>
@@ -454,7 +454,7 @@ onMounted(() => {
           >
             <span
               class="flex size-9 shrink-0 items-center justify-center rounded-lg"
-              :class="currentTheme === option.value ? 'bg-primary text-white' : 'bg-surface text-muted'"
+              :class="currentTheme === option.value ? 'bg-primary text-white dark:text-[#172117]' : 'bg-surface text-muted'"
             >
               <component :is="option.icon" :size="16" />
             </span>
@@ -524,7 +524,7 @@ onMounted(() => {
                   <Database :size="18" />
                 </span>
                 <div>
-                  <p class="text-xs font-extrabold text-ink">Cadangan lengkap Savezy</p>
+                  <p class="text-xs font-extrabold text-ink">Cadangan lengkap Tabungin</p>
                   <p class="mt-1 text-[11px] leading-relaxed text-muted">
                     {{ appStore.data.deposits.length }} setoran · {{ photoCount }} foto · {{ appStore.data.transactions.length }} transaksi
                   </p>
@@ -619,7 +619,7 @@ onMounted(() => {
 
           <p class="mt-4 flex items-start gap-2 rounded-xl bg-surface-2 p-3 text-[10px] leading-relaxed text-muted">
             <ShieldCheck :size="14" class="mt-0.5 shrink-0 text-success" />
-            File cadangan dibuat di browser dan langsung diunduh. Savezy tidak mengunggah data ke server mana pun.
+            File cadangan dibuat di browser dan langsung diunduh. Tabungin tidak mengunggah data ke server mana pun.
           </p>
         </div>
       </section>

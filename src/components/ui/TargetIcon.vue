@@ -24,7 +24,7 @@ const props = withDefaults(
   }>(),
   {
     name: 'Target',
-    color: '#5278F6',
+    color: '#5F8563',
     size: 20,
     boxed: true,
     boxSize: 'md',

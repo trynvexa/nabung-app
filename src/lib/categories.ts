@@ -1,23 +1,23 @@
 import type { CategoryDefinition, TransactionType } from '@/types'
 
 export const INCOME_CATEGORIES: CategoryDefinition[] = [
-  { name: 'Uang saku', type: 'income', icon: 'WalletCards', color: '#5278F6' },
-  { name: 'Freelance', type: 'income', icon: 'Laptop', color: '#7C6CF0' },
-  { name: 'Hadiah', type: 'income', icon: 'Gift', color: '#24AD7A' },
-  { name: 'Gaji', type: 'income', icon: 'BriefcaseBusiness', color: '#0EA5A5' },
-  { name: 'Investasi', type: 'income', icon: 'TrendingUp', color: '#34A853' },
-  { name: 'Lainnya', type: 'income', icon: 'CircleEllipsis', color: '#8290A8' },
+  { name: 'Uang saku', type: 'income', icon: 'WalletCards', color: '#5F8563' },
+  { name: 'Freelance', type: 'income', icon: 'Laptop', color: '#7C9450' },
+  { name: 'Hadiah', type: 'income', icon: 'Gift', color: '#C09236' },
+  { name: 'Gaji', type: 'income', icon: 'BriefcaseBusiness', color: '#4F8A7B' },
+  { name: 'Investasi', type: 'income', icon: 'TrendingUp', color: '#3F7A5A' },
+  { name: 'Lainnya', type: 'income', icon: 'CircleEllipsis', color: '#8A957F' },
 ]
 
 export const EXPENSE_CATEGORIES: CategoryDefinition[] = [
-  { name: 'Makanan', type: 'expense', icon: 'UtensilsCrossed', color: '#F59E0B' },
-  { name: 'Transportasi', type: 'expense', icon: 'BusFront', color: '#5278F6' },
-  { name: 'Belanja', type: 'expense', icon: 'ShoppingBag', color: '#EC4899' },
-  { name: 'Pendidikan', type: 'expense', icon: 'GraduationCap', color: '#8B5CF6' },
-  { name: 'Hiburan', type: 'expense', icon: 'Gamepad2', color: '#F97316' },
-  { name: 'Kesehatan', type: 'expense', icon: 'HeartPulse', color: '#EF6B7A' },
-  { name: 'Tagihan', type: 'expense', icon: 'ReceiptText', color: '#6366F1' },
-  { name: 'Lainnya', type: 'expense', icon: 'CircleEllipsis', color: '#94A3B8' },
+  { name: 'Makanan', type: 'expense', icon: 'UtensilsCrossed', color: '#D08A45' },
+  { name: 'Transportasi', type: 'expense', icon: 'BusFront', color: '#588B7A' },
+  { name: 'Belanja', type: 'expense', icon: 'ShoppingBag', color: '#C98273' },
+  { name: 'Pendidikan', type: 'expense', icon: 'GraduationCap', color: '#8C9A4B' },
+  { name: 'Hiburan', type: 'expense', icon: 'Gamepad2', color: '#C79B3B' },
+  { name: 'Kesehatan', type: 'expense', icon: 'HeartPulse', color: '#C96F63' },
+  { name: 'Tagihan', type: 'expense', icon: 'ReceiptText', color: '#9A7650' },
+  { name: 'Lainnya', type: 'expense', icon: 'CircleEllipsis', color: '#8A957F' },
 ]
 
 export const ALL_CATEGORIES = [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES]
@@ -32,7 +32,7 @@ export function findCategory(name: string): CategoryDefinition {
       name,
       type: 'expense',
       icon: 'CircleEllipsis',
-      color: '#94A3B8',
+      color: '#8A957F',
     }
   )
 }
@@ -50,7 +50,7 @@ export const TARGET_ICONS = [
   { name: 'Sparkles', label: 'Impian' },
 ] as const
 
-export const TARGET_COLORS = ['#5278F6', '#7C6CF0', '#A99AFB', '#24AD7A', '#F59E0B', '#EF6B7A', '#0EA5A5']
+export const TARGET_COLORS = ['#5F8563', '#C09236', '#C98273', '#588B7A', '#8C9A4B', '#9A7650', '#3F7A5A']
 
 export const WALLET_KIND_LABEL: Record<string, string> = {
   cash: 'Tunai',

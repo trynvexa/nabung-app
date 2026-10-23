@@ -36,7 +36,7 @@ export function createSeedData(): AppData {
       name: 'Dompet Tunai',
       kind: 'cash',
       initialBalance: 1_800_000,
-      color: '#24AD7A',
+      color: '#5F8563',
       createdAt: isoDaysAgo(160, 9, 0),
     },
     {
@@ -44,7 +44,7 @@ export function createSeedData(): AppData {
       name: 'Tabungan BCA',
       kind: 'bank',
       initialBalance: 5_000_000,
-      color: '#5278F6',
+      color: '#588B7A',
       createdAt: isoDaysAgo(160, 9, 2),
     },
     {
@@ -52,7 +52,7 @@ export function createSeedData(): AppData {
       name: 'GoPay',
       kind: 'ewallet',
       initialBalance: 1_200_000,
-      color: '#7C6CF0',
+      color: '#C09236',
       createdAt: isoDaysAgo(160, 9, 4),
     },
   ]
@@ -624,7 +624,7 @@ export function createEmptyData(settings?: Partial<AppData['settings']>): AppDat
         name: 'Dompet Utama',
         kind: 'cash',
         initialBalance: 0,
-        color: '#5278F6',
+        color: '#5F8563',
         createdAt: new Date(today).toISOString(),
       },
     ],
@@ -638,7 +638,7 @@ export function createEmptyData(settings?: Partial<AppData['settings']>): AppDat
     settings: {
       theme: 'light',
       hideAmounts: false,
-      profileName: 'Sahabat Savezy',
+      profileName: 'Sahabat Tabungin',
       ...settings,
     },
   }

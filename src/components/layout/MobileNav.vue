@@ -38,6 +38,10 @@ function isActive(path: string): boolean {
   return route.path === path || route.path.startsWith(`${path}/`)
 }
 
+function sheetLabel(label: string): string {
+  return label === 'Setoran Tabungan' ? 'Setoran' : label
+}
+
 function openSheet(): void {
   sheetOpen.value = true
   if (!locked) {
@@ -71,7 +75,7 @@ onBeforeUnmount(() => {
 
 <template>
   <nav
-    class="glass-header fixed inset-x-0 bottom-0 z-40 border-t border-line lg:hidden"
+    class="mobile-nav fixed inset-x-0 bottom-0 z-40 border-t border-line lg:hidden"
     aria-label="Navigasi mobile"
   >
     <div class="safe-bottom grid grid-cols-5 items-end px-2 pt-2">
@@ -94,11 +98,11 @@ onBeforeUnmount(() => {
       <div class="flex flex-col items-center">
         <button
           type="button"
-          class="-mt-6 flex size-14 items-center justify-center rounded-2xl bg-primary text-white shadow-[0_14px_30px_-12px_rgba(82,120,246,0.85)] transition-transform active:scale-95"
+          class="-mt-6 flex size-15 items-center justify-center rounded-full bg-primary text-white shadow-[0_16px_30px_-12px_rgba(74,111,81,0.7)] ring-4 ring-page/95 transition-transform active:scale-95 dark:text-[#172117]"
           aria-label="Mulai menabung"
           @click="ui.openDeposit()"
         >
-          <Plus :size="24" :stroke-width="2.5" />
+          <Plus :size="25" :stroke-width="2.7" />
         </button>
         <span class="mt-1 text-[9px] font-extrabold uppercase tracking-wide text-primary">Menabung</span>
       </div>
@@ -139,25 +143,25 @@ onBeforeUnmount(() => {
   <Teleport to="body">
     <Transition name="modal">
       <div v-if="sheetOpen" class="fixed inset-0 z-[80] flex items-end lg:hidden" role="presentation">
-        <div class="absolute inset-0 bg-[#0b1220]/55 backdrop-blur-[2px]" @click="closeSheet" />
+        <div class="absolute inset-0 bg-[#102018]/55 backdrop-blur-[2px]" @click="closeSheet" />
         <Transition name="sheet" appear>
           <div
             class="safe-bottom relative z-10 max-h-[85dvh] w-full overflow-y-auto rounded-t-[28px] border border-line bg-surface p-5 shadow-2xl"
             role="dialog"
             aria-modal="true"
-            aria-label="Menu Savezy"
+            aria-label="Menu Tabungin"
           >
             <div class="mx-auto mb-4 h-1 w-10 rounded-full bg-line-strong" />
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <span
-                  class="flex size-11 items-center justify-center rounded-2xl bg-primary text-sm font-extrabold text-white"
+                  class="flex size-11 items-center justify-center rounded-[15px] bg-primary-soft text-sm font-black text-primary-strong ring-1 ring-primary/15"
                 >
                   {{ userInitials }}
                 </span>
                 <div>
                   <p class="text-sm font-extrabold text-ink">{{ profileName }}</p>
-                  <p class="mt-0.5 text-[11px] font-semibold text-muted">Savezy · data lokal</p>
+                  <p class="mt-0.5 text-[11px] font-semibold text-muted">Tabungin · celengan impianmu</p>
                 </div>
               </div>
               <button type="button" class="icon-btn" aria-label="Tutup menu" @click="closeSheet">
@@ -176,20 +180,21 @@ onBeforeUnmount(() => {
 
             <div class="mt-5 grid grid-cols-2 gap-2">
               <RouterLink
-                v-for="item in allDestinations"
+                v-for="(item, index) in allDestinations"
                 :key="item.to"
                 :to="item.to"
-                class="flex items-center gap-3 rounded-2xl border border-line bg-surface-2 px-3 py-3 text-left transition-colors active:bg-surface-3"
+                class="flex items-center gap-3 rounded-[16px] border border-line bg-surface-2 px-3 py-3 text-left transition-colors active:bg-surface-3"
+                :class="{ 'col-span-2': allDestinations.length % 2 === 1 && index === allDestinations.length - 1 }"
                 @click="closeSheet"
               >
                 <span
                   class="flex size-9 shrink-0 items-center justify-center rounded-xl"
-                  :class="isActive(item.to) ? 'bg-primary text-white' : 'bg-surface text-muted'"
+                  :class="isActive(item.to) ? 'bg-primary text-white dark:text-[#172117]' : 'bg-surface text-muted'"
                 >
                   <component :is="item.icon" :size="17" />
                 </span>
                 <span class="min-w-0 flex-1">
-                  <span class="block truncate text-xs font-bold text-ink">{{ item.label }}</span>
+                  <span class="block whitespace-nowrap text-xs font-bold text-ink">{{ sheetLabel(item.label) }}</span>
                 </span>
                 <ChevronRight :size="13" class="text-muted" />
               </RouterLink>

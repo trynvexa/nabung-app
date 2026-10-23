@@ -103,7 +103,7 @@ function money(value: number): string {
 }
 
 function targetColor(index: number): string {
-  return TARGET_COLORS[index % TARGET_COLORS.length] ?? '#5278F6'
+  return TARGET_COLORS[index % TARGET_COLORS.length] ?? '#5F8563'
 }
 
 function deadlineLabel(deadline?: string): string {
@@ -372,7 +372,7 @@ async function deleteLinkedDeposit(id: string): Promise<void> {
         <div class="flex items-start justify-between gap-2">
           <TargetIcon
             :name="entry.target.icon"
-            :color="entry.progress.isComplete ? '#24AD7A' : targetColor(index)"
+            :color="entry.progress.isComplete ? '#5B9563' : targetColor(index)"
             box-size="lg"
             :size="23"
           />
@@ -627,7 +627,7 @@ async function deleteLinkedDeposit(id: string): Promise<void> {
         <div class="flex flex-col gap-4 rounded-2xl bg-surface-2 p-4 sm:flex-row sm:items-center">
           <TargetIcon
             :name="selectedEntry.target.icon"
-            :color="selectedEntry.progress.isComplete ? '#24AD7A' : '#5278F6'"
+            :color="selectedEntry.progress.isComplete ? '#5B9563' : '#5F8563'"
             box-size="lg"
             :size="24"
           />

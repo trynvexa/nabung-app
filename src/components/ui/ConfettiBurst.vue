@@ -12,7 +12,7 @@ const props = withDefaults(
   },
 )
 
-const colors = ['#5278F6', '#A99AFB', '#24AD7A', '#F5B454', '#EF6B7A', '#7C6CF0']
+const colors = ['#5F8563', '#B88A3D', '#C98273', '#5B9563', '#E3BA73', '#8C9A4B']
 
 const pieces = computed(() =>
   Array.from({ length: props.count }, (_, index) => ({
@@ -20,7 +20,7 @@ const pieces = computed(() =>
     left: `${(index * 37 + 11) % 100}%`,
     delay: `${(index % 8) * 70}ms`,
     duration: `${1100 + (index % 6) * 160}ms`,
-    color: colors[index % colors.length] ?? '#5278F6',
+    color: colors[index % colors.length] ?? '#5F8563',
     width: `${5 + (index % 4) * 2}px`,
     height: `${8 + (index % 5) * 2}px`,
     drift: `${(index % 2 === 0 ? 1 : -1) * (14 + (index % 6) * 9)}px`,

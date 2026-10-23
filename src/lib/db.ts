@@ -1,5 +1,7 @@
 import type { AppData, PhotoRecord } from '@/types'
 
+// Internal keys stay on the original names so existing local data and photos
+// remain available after the Tabungin rebrand.
 const DB_NAME = 'savezy-db'
 const DB_VERSION = 1
 const KV_STORE = 'kv'

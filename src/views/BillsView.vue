@@ -532,7 +532,7 @@ function saveBill(): void {
           :title="filter === 'all' ? 'Belum ada tagihan' : 'Tidak ada tagihan pada filter ini'"
           :description="
             filter === 'all'
-              ? 'Tambahkan tagihan rutin agar Savezy mengingatkanmu sebelum jatuh tempo.'
+              ? 'Tambahkan tagihan rutin agar Tabungin mengingatkanmu sebelum jatuh tempo.'
               : 'Coba pilih filter lain atau tambahkan tagihan baru.'
           "
         >

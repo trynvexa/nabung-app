@@ -80,7 +80,7 @@ watch(
         <div class="aspect-[16/10] w-full cursor-zoom-in" @click="lightboxOpen = true">
           <PhotoThumb :photo-id="deposit.photoId" alt="Bukti setoran" />
           <div
-            class="absolute inset-0 flex items-center justify-center bg-[#0b1220]/0 opacity-0 transition-all duration-200 group-hover:bg-[#0b1220]/25 group-hover:opacity-100"
+            class="absolute inset-0 flex items-center justify-center bg-[#102018]/0 opacity-0 transition-all duration-200 group-hover:bg-[#102018]/25 group-hover:opacity-100"
           >
             <span class="flex items-center gap-2 rounded-xl bg-white/95 px-3 py-2 text-xs font-bold text-ink shadow-lg">
               <Expand :size="14" />
@@ -112,7 +112,7 @@ watch(
           <div class="flex items-center gap-2 text-[11px] font-bold text-muted">
             <TargetIcon
               :name="target?.icon ?? 'PiggyBank'"
-              :color="target ? '#5278F6' : '#8290A8'"
+              :color="target ? '#5F8563' : '#8A957F'"
               :size="14"
               :boxed="false"
             />

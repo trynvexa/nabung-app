@@ -217,7 +217,7 @@ export const useAppStore = defineStore('app', () => {
       } else {
         if (stored) {
           persistenceWarning.value =
-            'Data lokal lama tidak dapat dibaca. Savezy memuat data contoh baru; impor cadangan untuk memulihkan data Anda.'
+            'Data lokal lama tidak dapat dibaca. Tabungin memuat data contoh baru; impor cadangan untuk memulihkan data Anda.'
         }
         const seeded = createSeedData()
         await attachDemoPhotos(seeded)
@@ -231,7 +231,7 @@ export const useAppStore = defineStore('app', () => {
       fatalError.value =
         error instanceof Error
           ? error.message
-          : 'Savezy tidak dapat membuka penyimpanan lokal di browser ini.'
+          : 'Tabungin tidak dapat membuka penyimpanan lokal di browser ini.'
     } finally {
       loading.value = false
     }

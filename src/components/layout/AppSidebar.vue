@@ -5,6 +5,7 @@ import { ArrowUpRight, ShieldCheck, Sparkles } from '@lucide/vue'
 import { useAppStore } from '@/stores/app'
 import { navGroups, settingsNav } from '@/lib/navigation'
 import { initials } from '@/lib/format'
+import BrandMark from '@/components/brand/BrandMark.vue'
 
 const route = useRoute()
 const appStore = useAppStore()
@@ -19,27 +20,20 @@ function isActive(path: string): boolean {
 
 <template>
   <aside
-    class="fixed inset-y-0 left-0 z-40 hidden w-[272px] flex-col border-r border-line bg-surface lg:flex"
+    class="fixed inset-y-0 left-0 z-40 hidden w-[272px] flex-col border-r border-line/80 bg-surface/95 backdrop-blur-xl lg:flex"
     aria-label="Navigasi utama"
   >
-    <div class="flex h-[84px] items-center px-6">
-      <RouterLink to="/" class="group flex items-center gap-3" aria-label="Savezy, ke dashboard">
-        <span
-          class="flex size-10 items-center justify-center rounded-[14px] bg-primary text-white shadow-[0_10px_24px_-12px_rgba(82,120,246,0.8)] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105"
-        >
-          <svg viewBox="0 0 32 32" width="21" height="21" fill="none" aria-hidden="true">
-            <path
-              d="M8.5 21.7c1.9 1.7 4.5 2.6 7.4 2.6 3.9 0 6.6-1.9 6.6-4.9 0-2.8-2-4-5.9-4.9l-1.9-.4c-2-.5-2.8-1-2.8-2.1 0-1.2 1.2-2 3.2-2 2 0 3.8.7 5.4 1.9l2.2-2.7C20.9 7.6 17.9 6.4 14.7 6.4c-4 0-6.8 2-6.8 5.1 0 2.8 2 4.2 5.7 5l1.9.4c2.1.4 2.9 1 2.9 2.2 0 1.4-1.3 2.1-3.4 2.1-2.2 0-4.1-.8-5.7-2.3l-2.2 2.8Z"
-              fill="currentColor"
-            />
-          </svg>
-        </span>
+    <div class="flex h-[90px] items-center px-6">
+      <RouterLink to="/" class="group flex items-center gap-3" aria-label="Tabungin, ke dashboard">
+        <BrandMark
+          class="size-11 shrink-0 drop-shadow-[0_10px_18px_rgba(74,111,81,0.22)] transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105"
+        />
         <span>
-          <span class="block text-[19px] font-extrabold leading-none tracking-[-0.04em] text-ink">
-            Savezy
+          <span class="block text-[21px] font-black leading-none tracking-[-0.045em] text-ink">
+            Tabungin
           </span>
-          <span class="mt-1 block text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
-            Menabung berbukti
+          <span class="mt-1 block text-[10px] font-extrabold uppercase tracking-[0.15em] text-primary-strong/80">
+            Celengan impianmu
           </span>
         </span>
       </RouterLink>
@@ -72,15 +66,24 @@ function isActive(path: string): boolean {
         </div>
       </div>
 
-      <div class="mt-6 rounded-2xl border border-line bg-surface-2 p-3.5">
-        <div class="flex items-center gap-2">
-          <span class="flex size-7 items-center justify-center rounded-lg bg-lavender-soft text-lavender">
-            <Sparkles :size="14" />
+      <div class="relative mt-5 overflow-hidden rounded-[20px] border border-primary/15 bg-primary-soft/60 p-4">
+        <svg
+          class="pointer-events-none absolute -bottom-8 -right-7 w-28 text-primary/15"
+          viewBox="0 0 120 120"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path d="M18 112C38 84 60 60 98 41" stroke="currentColor" stroke-width="2" />
+          <path d="M46 80c-18-2-28-13-30-32 18 2 28 13 30 32ZM69 56c-16-8-21-22-16-40 16 8 21 21 16 40ZM90 38c-10-12-10-24-1-38" fill="currentColor" fill-opacity=".55" />
+        </svg>
+        <div class="relative flex items-center gap-2">
+          <span class="flex size-8 items-center justify-center rounded-[10px] bg-surface/80 text-lavender shadow-sm">
+            <Sparkles :size="15" />
           </span>
-          <p class="text-xs font-extrabold text-ink">Kebiasaan kecil, hasil nyata.</p>
+          <p class="text-xs font-black text-ink">Kecil-kecil, lama-lama besar.</p>
         </div>
-        <p class="mt-1.5 text-[11px] leading-relaxed text-muted">
-          Catat setiap setoran, sekecil apa pun. Konsistensi mengalahkan nominal besar.
+        <p class="relative mt-2 text-[11px] font-medium leading-relaxed text-ink-soft/80">
+          Sisihkan sedikit hari ini. Konsistensi kecil akan terasa besar nanti.
         </p>
       </div>
     </nav>
@@ -92,7 +95,7 @@ function isActive(path: string): boolean {
         :class="isActive(settingsNav.to) ? 'bg-primary-soft' : ''"
       >
         <span
-          class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-[13px] font-extrabold text-white"
+          class="flex size-10 shrink-0 items-center justify-center rounded-[13px] bg-primary-soft text-[13px] font-black text-primary-strong ring-1 ring-primary/15"
         >
           {{ userInitials }}
         </span>

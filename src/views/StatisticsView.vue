@@ -518,7 +518,7 @@ function targetSaved(card: (typeof appStore.targetCards)[number]): number {
           >
             <TargetIcon
               :name="card.target.icon"
-              :color="card.progress.isComplete ? '#24AD7A' : '#5278F6'"
+              :color="card.progress.isComplete ? '#5B9563' : '#5F8563'"
               :size="16"
               box-size="sm"
             />

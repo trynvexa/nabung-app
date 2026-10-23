@@ -14,7 +14,7 @@ export function useTheme() {
     if (typeof document === 'undefined') return
     document.documentElement.classList.toggle('dark', isDark.value)
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', isDark.value ? '#0A1020' : '#F5F7FC')
+    if (meta) meta.setAttribute('content', isDark.value ? '#151D17' : '#F7F4E9')
   })
 
   function toggleTheme(): void {

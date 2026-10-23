@@ -27,7 +27,7 @@ export async function buildBackup(data: AppData): Promise<BackupFile> {
     }
   }
   return {
-    app: 'savezy',
+    app: 'tabungin',
     version: 1,
     exportedAt: new Date().toISOString(),
     data,
@@ -125,11 +125,11 @@ export function downloadFile(filename: string, content: BlobPart, mimeType: stri
 }
 
 export function backupFilename(): string {
-  return `savezy-backup-${new Date().toISOString().slice(0, 10)}.json`
+  return `tabungin-backup-${new Date().toISOString().slice(0, 10)}.json`
 }
 
 export function csvFilename(prefix: string): string {
-  return `savezy-${prefix}-${new Date().toISOString().slice(0, 10)}.csv`
+  return `tabungin-${prefix}-${new Date().toISOString().slice(0, 10)}.csv`
 }
 
 /** A photo imported from an untrusted backup still receives a fresh id if needed. */

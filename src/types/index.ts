@@ -136,7 +136,7 @@ export interface BackupPhoto {
 }
 
 export interface BackupFile {
-  app: 'savezy'
+  app: 'tabungin'
   version: number
   exportedAt: string
   data: AppData

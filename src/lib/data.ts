@@ -48,8 +48,23 @@ function normalizeSettings(raw: unknown): AppSettings {
   return {
     theme: theme === 'dark' || theme === 'system' ? theme : 'light',
     hideAmounts: source.hideAmounts === true,
-    profileName: safeString(source.profileName, 'Sahabat Savezy').slice(0, 60) || 'Sahabat Savezy',
+    profileName: safeString(source.profileName, 'Sahabat Tabungin').slice(0, 60) || 'Sahabat Tabungin',
   }
+}
+
+const LEGACY_WALLET_COLORS: Record<string, string> = {
+  '#5278f6': '#5F8563',
+  '#7c6cf0': '#C09236',
+  '#24ad7a': '#588B7A',
+  '#f59e0b': '#D08A45',
+  '#ef6b7a': '#C98273',
+  '#0ea5a5': '#4F8A7B',
+}
+
+function normalizeWalletColor(value: unknown): string {
+  const color = safeString(value)
+  if (!/^#[0-9a-fA-F]{6}$/.test(color)) return '#5F8563'
+  return LEGACY_WALLET_COLORS[color.toLowerCase()] ?? color
 }
 
 function normalizeWallets(raw: unknown): Wallet[] {
@@ -64,7 +79,7 @@ function normalizeWallets(raw: unknown): Wallet[] {
             ? (item.kind as Wallet['kind'])
             : ('cash' as const),
         initialBalance: safeNumber(item.initialBalance),
-        color: /^#[0-9a-fA-F]{6}$/.test(safeString(item.color)) ? safeString(item.color) : '#5278F6',
+        color: normalizeWalletColor(item.color),
         createdAt: safeString(item.createdAt, new Date().toISOString()),
       })),
   )
@@ -248,7 +263,9 @@ export function normalizeAppData(raw: unknown): AppData | null {
 }
 
 export function sanitizeImportedData(raw: unknown): { data: AppData; photoIds: string[] } | null {
-  if (!isObject(raw) || raw.app !== 'savezy' || !isObject(raw.data)) return null
+  if (!isObject(raw) || (raw.app !== 'tabungin' && raw.app !== 'savezy') || !isObject(raw.data)) {
+    return null
+  }
   const data = normalizeAppData(raw.data)
   if (!data) return null
   const photoIds = [...new Set(data.deposits.map((deposit) => deposit.photoId).filter(Boolean))]

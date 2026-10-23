@@ -14,7 +14,7 @@ const props = withDefaults(
   }>(),
   {
     title: 'Bukti setoran',
-    filename: 'savezy-bukti-setoran.jpg',
+    filename: 'tabungin-bukti-setoran.jpg',
   },
 )
 
@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
     <Transition name="modal">
       <div
         v-if="open"
-        class="fixed inset-0 z-[90] flex flex-col bg-[#070b14]/92 text-white backdrop-blur-md"
+        class="fixed inset-0 z-[90] flex flex-col bg-[#08120c]/92 text-white backdrop-blur-md"
         role="dialog"
         aria-modal="true"
         :aria-label="title"

@@ -25,7 +25,7 @@ withDefaults(
       <div class="absolute -left-7 top-3 size-9 rounded-full bg-primary-soft" />
       <div class="absolute -right-6 bottom-1 size-6 rounded-full bg-lavender-soft" />
       <div
-        class="relative flex size-20 items-center justify-center rounded-[26px] border border-line bg-surface-2 text-primary shadow-[0_14px_30px_-20px_rgba(82,120,246,0.6)]"
+        class="relative flex size-20 items-center justify-center rounded-[26px] border border-primary/10 bg-primary-soft/55 text-primary shadow-[0_16px_30px_-22px_rgba(74,111,81,0.65)]"
       >
         <component :is="icon" :size="30" :stroke-width="1.7" />
         <span class="absolute -right-1.5 -top-1.5 size-3 rounded-full bg-lavender" />

@@ -66,7 +66,7 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  document.title = `${pageTitleFor(to.path)} · Savezy`
+  document.title = `${pageTitleFor(to.path)} · Tabungin`
 })
 
 export default router

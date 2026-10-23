@@ -420,7 +420,7 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
                 <div class="flex items-center gap-3">
                   <CategoryIcon
                     :name="findCategory(transaction.category).icon"
-                    :color="transaction.type === 'income' ? '#24AD7A' : findCategory(transaction.category).color"
+                    :color="transaction.type === 'income' ? '#5B9563' : findCategory(transaction.category).color"
                     :size="16"
                     box-size="sm"
                   />
@@ -474,7 +474,7 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
         >
           <CategoryIcon
             :name="findCategory(transaction.category).icon"
-            :color="transaction.type === 'income' ? '#24AD7A' : findCategory(transaction.category).color"
+            :color="transaction.type === 'income' ? '#5B9563' : findCategory(transaction.category).color"
             :size="16"
             box-size="sm"
           />
@@ -553,7 +553,7 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
           <button
             type="button"
             class="flex items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-extrabold transition-all"
-            :class="form.type === 'income' ? 'bg-success text-white shadow-sm' : 'text-muted hover:text-ink'"
+            :class="form.type === 'income' ? 'bg-success text-white shadow-sm dark:text-[#172117]' : 'text-muted hover:text-ink'"
             @click="setFormType('income')"
           >
             <ArrowDownLeft :size="15" />
@@ -562,7 +562,7 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
           <button
             type="button"
             class="flex items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-extrabold transition-all"
-            :class="form.type === 'expense' ? 'bg-danger text-white shadow-sm' : 'text-muted hover:text-ink'"
+            :class="form.type === 'expense' ? 'bg-danger text-white shadow-sm dark:text-[#172117]' : 'text-muted hover:text-ink'"
             @click="setFormType('expense')"
           >
             <ArrowUpRight :size="15" />

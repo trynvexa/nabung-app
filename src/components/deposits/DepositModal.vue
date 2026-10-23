@@ -595,7 +595,7 @@ function quickAmount(value: number): void {
         v-if="completedTarget"
         class="mt-4 flex items-center gap-3 rounded-2xl border border-success/25 bg-success-soft p-3.5"
       >
-        <TargetIcon :name="completedTarget.icon" color="#24AD7A" />
+        <TargetIcon :name="completedTarget.icon" color="#5B9563" />
         <div class="min-w-0 flex-1">
           <p class="text-xs font-extrabold text-success">Target tercapai!</p>
           <p class="mt-0.5 truncate text-[11px] text-success/80">

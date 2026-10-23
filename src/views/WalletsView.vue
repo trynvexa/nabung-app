@@ -47,7 +47,7 @@ const kindOptions: Array<{ value: WalletKind; label: string }> = [
   { value: 'bank', label: 'Rekening bank' },
   { value: 'ewallet', label: 'Dompet digital' },
 ]
-const colorOptions = ['#5278F6', '#7C6CF0', '#24AD7A', '#F59E0B', '#EF6B7A', '#0EA5A5']
+const colorOptions = ['#5F8563', '#C09236', '#C98273', '#588B7A', '#8C9A4B', '#9A7650']
 
 function money(value: number): string {
   return hideAmounts.value ? 'Rp••••••' : formatCurrency(value)
@@ -61,7 +61,7 @@ const walletForm = reactive({
   name: '',
   kind: 'cash' as WalletKind,
   initialBalance: 0,
-  color: '#5278F6',
+  color: '#5F8563',
 })
 const walletErrors = reactive({ name: '', initialBalance: '' })
 
@@ -70,7 +70,7 @@ function openAddWallet(): void {
   walletForm.name = ''
   walletForm.kind = 'cash'
   walletForm.initialBalance = 0
-  walletForm.color = '#5278F6'
+  walletForm.color = '#5F8563'
   walletErrors.name = ''
   walletErrors.initialBalance = ''
   walletError.value = ''
@@ -430,7 +430,7 @@ async function deleteTransfer(transfer: Transfer): Promise<void> {
           <span class="flex size-8 items-center justify-center rounded-lg bg-success-soft text-success">
             <ArrowLeftRight :size="15" />
           </span>
-          <h2 class="text-sm font-extrabold text-ink">Cara Savezy menghitung</h2>
+          <h2 class="text-sm font-extrabold text-ink">Cara Tabungin menghitung</h2>
         </div>
         <div class="mt-4 space-y-3 text-[11px] leading-relaxed text-muted">
           <p><strong class="text-ink">Saldo dompet</strong> = saldo awal + pemasukan − pengeluaran − setoran tabungan ± transfer.</p>

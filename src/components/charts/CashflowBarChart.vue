@@ -28,8 +28,8 @@ const data = computed<ChartData<'bar'>>(() => ({
     {
       label: 'Pemasukan',
       data: props.points.map((point) => point.income),
-      backgroundColor: isDark.value ? '#7D98FF' : '#5278F6',
-      hoverBackgroundColor: isDark.value ? '#91A8FF' : '#3D61DE',
+      backgroundColor: isDark.value ? '#9CC09A' : '#5F8563',
+      hoverBackgroundColor: isDark.value ? '#B1CEA9' : '#4A6F51',
       borderRadius: 6,
       borderSkipped: false,
       maxBarThickness: 18,
@@ -37,8 +37,8 @@ const data = computed<ChartData<'bar'>>(() => ({
     {
       label: 'Pengeluaran',
       data: props.points.map((point) => point.expense),
-      backgroundColor: isDark.value ? '#B9ABFF' : '#C4B8FF',
-      hoverBackgroundColor: isDark.value ? '#C9BEFF' : '#A99AFB',
+      backgroundColor: isDark.value ? '#E3BA73' : '#D8AD5F',
+      hoverBackgroundColor: isDark.value ? '#F1CE89' : '#C09236',
       borderRadius: 6,
       borderSkipped: false,
       maxBarThickness: 18,
@@ -54,9 +54,9 @@ const options = computed<ChartOptions<'bar'>>(() => ({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: isDark.value ? '#1B2740' : '#182747',
-      titleColor: '#E9EEFA',
-      bodyColor: '#C9D3E6',
+      backgroundColor: isDark.value ? '#233126' : '#2F4132',
+      titleColor: '#F7F4E9',
+      bodyColor: '#D9DFD4',
       padding: 11,
       cornerRadius: 10,
       displayColors: true,
@@ -74,17 +74,17 @@ const options = computed<ChartOptions<'bar'>>(() => ({
       grid: { display: false },
       border: { display: false },
       ticks: {
-        color: isDark.value ? '#8D9AB2' : '#8290A8',
-        font: { size: 11, weight: 600, family: 'Manrope Variable' },
+        color: isDark.value ? '#98A593' : '#7F8D7B',
+        font: { size: 11, weight: 700, family: 'Nunito Variable' },
       },
     },
     y: {
       beginAtZero: true,
-      grid: { color: isDark.value ? 'rgba(255,255,255,0.07)' : '#EDF1F8' },
+      grid: { color: isDark.value ? 'rgba(255,255,255,0.07)' : '#EBE8DB' },
       border: { display: false },
       ticks: {
-        color: isDark.value ? '#8D9AB2' : '#8290A8',
-        font: { size: 10, weight: 600, family: 'Manrope Variable' },
+        color: isDark.value ? '#98A593' : '#7F8D7B',
+        font: { size: 10, weight: 700, family: 'Nunito Variable' },
         maxTicksLimit: 4,
         callback: (value: string | number) => formatCompactCurrency(Number(value)),
       },

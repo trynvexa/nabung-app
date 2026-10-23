@@ -27,7 +27,7 @@ const props = withDefaults(
   }>(),
   {
     name: 'CircleEllipsis',
-    color: '#8290A8',
+    color: '#8A957F',
     size: 18,
     boxed: true,
     boxSize: 'md',

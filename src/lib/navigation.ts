@@ -70,5 +70,5 @@ export function pageTitleFor(path: string): string {
     if (found) return found.label
   }
   if (path === settingsNav.to) return settingsNav.label
-  return 'Savezy'
+  return 'Tabungin'
 }

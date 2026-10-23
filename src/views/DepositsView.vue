@@ -315,7 +315,7 @@ async function deleteDeposit(id: string): Promise<void> {
             :key="preset.value"
             type="button"
             class="rounded-lg px-2.5 py-1 text-[10px] font-bold transition-colors"
-            :class="period === preset.value ? 'bg-primary text-white' : 'bg-surface-3 text-muted hover:text-ink'"
+            :class="period === preset.value ? 'bg-primary text-white dark:text-[#172117]' : 'bg-surface-3 text-muted hover:text-ink'"
             @click="period = preset.value as PeriodOption"
           >
             {{ preset.label }}

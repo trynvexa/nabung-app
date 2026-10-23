@@ -114,12 +114,12 @@ onBeforeUnmount(release)
         role="presentation"
       >
         <div
-          class="absolute inset-0 bg-[#0b1220]/55 backdrop-blur-[3px]"
+          class="absolute inset-0 bg-[#102018]/55 backdrop-blur-[3px]"
           @click="requestClose"
         />
         <div
           ref="panel"
-          class="modal-panel relative z-10 flex max-h-[93dvh] w-full flex-col overflow-hidden rounded-t-[28px] border border-line bg-surface shadow-[0_30px_80px_-20px_rgba(10,16,32,0.5)] sm:max-h-[90dvh] sm:rounded-2xl"
+          class="modal-panel relative z-10 flex max-h-[93dvh] w-full flex-col overflow-hidden rounded-t-[28px] border border-line bg-surface shadow-[0_30px_80px_-20px_rgba(16,32,24,0.45)] sm:max-h-[90dvh] sm:rounded-[24px]"
           :class="sizeClass"
           role="dialog"
           aria-modal="true"

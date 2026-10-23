@@ -1,5 +1,24 @@
-# Vue 3 + TypeScript + Vite
+# Tabungin
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Tabungin adalah aplikasi menabung lokal-first untuk mencatat setoran berbukti, target tabungan, anggaran, tagihan rutin, dan kebiasaan finansial. Seluruh data dan foto bukti disimpan di perangkat, tanpa server dan tanpa akun.
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## Menjalankan
+
+```bash
+npm install
+npm run dev
+```
+
+## Pemeriksaan
+
+```bash
+npm run typecheck
+npm run build
+```
+
+## Catatan data
+
+- Data utama dan foto disimpan di IndexedDB browser.
+- Preferensi ringan disimpan di LocalStorage.
+- Cadangan JSON menyertakan metadata dan foto bukti.
+- Impor tetap menerima cadangan lama dari versi sebelumnya.

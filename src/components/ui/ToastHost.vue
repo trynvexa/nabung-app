@@ -38,7 +38,7 @@ const labels: Record<ToastVariant, string> = {
       <div
         v-for="toast in ui.toasts"
         :key="toast.id"
-        class="pointer-events-auto flex w-full items-start gap-3 rounded-2xl border border-line bg-surface p-3.5 shadow-[0_20px_50px_-24px_rgba(24,39,71,0.4)]"
+        class="pointer-events-auto flex w-full items-start gap-3 rounded-[18px] border border-line bg-surface p-3.5 shadow-[0_20px_50px_-24px_rgba(47,65,50,0.4)]"
       >
         <span
           class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl"

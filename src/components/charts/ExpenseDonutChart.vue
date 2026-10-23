@@ -22,7 +22,7 @@ const data = computed<ChartData<'doughnut'>>(() => ({
     {
       data: props.items.map((item) => item.amount),
       backgroundColor: props.items.map((item) => findCategory(item.category).color),
-      borderColor: isDark.value ? '#11192B' : '#FFFFFF',
+      borderColor: isDark.value ? '#1D2820' : '#FFFDF7',
       borderWidth: 3,
       hoverOffset: 4,
       borderRadius: 4,
@@ -38,9 +38,9 @@ const options = computed<ChartOptions<'doughnut'>>(() => ({
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: isDark.value ? '#1B2740' : '#182747',
-      titleColor: '#E9EEFA',
-      bodyColor: '#C9D3E6',
+      backgroundColor: isDark.value ? '#233126' : '#2F4132',
+      titleColor: '#F7F4E9',
+      bodyColor: '#D9DFD4',
       padding: 11,
       cornerRadius: 10,
       boxWidth: 8,
