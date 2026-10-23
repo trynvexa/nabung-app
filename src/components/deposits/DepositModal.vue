@@ -26,6 +26,7 @@ import PhotoThumb from '@/components/ui/PhotoThumb.vue'
 import PhotoLightbox from '@/components/ui/PhotoLightbox.vue'
 import ConfettiBurst from '@/components/ui/ConfettiBurst.vue'
 import TargetIcon from '@/components/ui/TargetIcon.vue'
+import SavingsCat from '@/components/brand/SavingsCat.vue'
 
 const appStore = useAppStore()
 const ui = useUiStore()
@@ -64,7 +65,7 @@ const editing = computed(() =>
 )
 const modalTitle = computed(() => {
   if (mode.value === 'success') return 'Setoran berhasil dicatat'
-  return editing.value ? 'Edit setoran' : 'Mulai menabung'
+  return editing.value ? 'Edit setoran' : 'Tambah Tabungan'
 })
 const modalSubtitle = computed(() => {
   if (mode.value === 'success') return 'Bukti dan nominal sudah tersimpan di perangkat ini.'
@@ -367,6 +368,17 @@ function quickAmount(value: number): void {
   >
     <ConfettiBurst v-if="mode === 'success' && completedTarget" />
     <div v-if="mode === 'form'" class="space-y-5 pt-1">
+      <div class="relative flex h-[112px] items-center overflow-hidden rounded-[20px] bg-[#edf4e1] px-4 lg:hidden">
+        <div class="relative z-10 max-w-[58%]">
+          <p class="text-[13px] font-black leading-snug text-[#3f6047]">Yuk, mulai menabung!</p>
+          <p class="mt-1 text-[9px] font-semibold leading-relaxed text-[#71806d]">
+            Sedikit demi sedikit, impianmu semakin dekat.
+          </p>
+        </div>
+        <SavingsCat class="absolute -bottom-7 -right-3 w-[126px]" />
+        <span class="absolute right-[28%] top-3 size-1.5 rounded-full bg-[#ddbd70]" />
+      </div>
+
       <div class="rounded-2xl border border-primary/15 bg-primary-soft/45 p-4 sm:p-5">
         <div class="flex items-start justify-between gap-3">
           <label for="deposit-amount" class="label text-ink">Jumlah setoran</label>
@@ -381,15 +393,20 @@ function quickAmount(value: number): void {
         </div>
         <CurrencyInput id="deposit-amount" v-model="form.amount" large :invalid="!!errors.amount" />
         <p v-if="errors.amount" class="field-error">{{ errors.amount }}</p>
-        <div class="mt-3 flex flex-wrap gap-1.5">
+        <div class="mt-3 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-1.5">
           <button
-            v-for="value in [10000, 20000, 50000, 100000, 250000]"
+            v-for="value in [10000, 25000, 50000, 100000, 250000, 500000]"
             :key="value"
             type="button"
-            class="rounded-lg border border-line bg-surface px-2.5 py-1.5 text-[11px] font-bold text-ink-soft transition-colors hover:border-primary/30 hover:text-primary"
+            class="rounded-lg border py-2 text-[10px] font-bold transition-colors sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+            :class="
+              form.amount === value
+                ? 'border-primary/30 bg-primary-soft text-primary'
+                : 'border-line bg-surface text-ink-soft hover:border-primary/30 hover:text-primary'
+            "
             @click="quickAmount(value)"
           >
-            +{{ value >= 1000 ? `${value / 1000}rb` : value }}
+            {{ value >= 1000 ? `${value / 1000}rb` : value }}
           </button>
         </div>
       </div>
@@ -652,7 +669,7 @@ function quickAmount(value: number): void {
         <button type="button" class="btn btn-primary min-w-[150px]" :disabled="saving" @click="submit">
           <LoaderCircle v-if="saving" :size="16" class="animate-spin" />
           <Check v-else :size="16" />
-          {{ saving ? 'Menyimpan…' : editing ? 'Simpan Perubahan' : 'Simpan Setoran' }}
+          {{ saving ? 'Menyimpan…' : editing ? 'Simpan Perubahan' : 'Simpan Tabungan' }}
         </button>
       </template>
       <template v-else>

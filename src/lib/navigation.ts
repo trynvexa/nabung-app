@@ -8,6 +8,7 @@ import {
   ReceiptText,
   Settings,
   Target,
+  UserRound,
   Wallet,
   WalletCards,
 } from '@lucide/vue'
@@ -60,9 +61,20 @@ export const settingsNav: NavItem = {
 
 export const mobilePrimaryNav: NavItem[] = [
   { to: '/', label: 'Beranda', icon: LayoutDashboard },
-  { to: '/transaksi', label: 'Transaksi', icon: ReceiptText },
   { to: '/target', label: 'Target', icon: Target },
+  { to: '/transaksi', label: 'Riwayat', icon: ReceiptText },
+  { to: '/profil', label: 'Profil', icon: UserRound },
 ]
+
+const extraTitles: Record<string, string> = {
+  '/mulai': 'Selamat Datang',
+  '/onboarding': 'Mulai Menabung',
+  '/masuk': 'Masuk',
+  '/daftar': 'Daftar',
+  '/lupa-sandi': 'Lupa Kata Sandi',
+  '/profil': 'Profil',
+  '/notifikasi': 'Notifikasi',
+}
 
 export function pageTitleFor(path: string): string {
   for (const group of navGroups) {
@@ -70,5 +82,6 @@ export function pageTitleFor(path: string): string {
     if (found) return found.label
   }
   if (path === settingsNav.to) return settingsNav.label
+  if (extraTitles[path]) return extraTitles[path]
   return 'Tabungin'
 }

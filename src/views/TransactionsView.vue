@@ -5,6 +5,8 @@ import {
   ArrowUpRight,
   CalendarDays,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   LoaderCircle,
   Pencil,
   Plus,
@@ -18,7 +20,7 @@ import type { FinanceTransaction, TransactionType } from '@/types'
 import { useAppStore } from '@/stores/app'
 import { useUiStore } from '@/stores/ui'
 import { ALL_CATEGORIES, categoriesFor, findCategory } from '@/lib/categories'
-import { addDays, formatDateLong, formatWeekday, toDateKey, todayKey } from '@/lib/date'
+import { addDays, formatDateLong, formatMonth, formatWeekday, toDateKey, todayKey } from '@/lib/date'
 import { formatCurrency } from '@/lib/format'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import AnimatedNumber from '@/components/ui/AnimatedNumber.vue'
@@ -26,6 +28,7 @@ import CategoryIcon from '@/components/ui/CategoryIcon.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import CurrencyInput from '@/components/ui/CurrencyInput.vue'
+import SavingsCat from '@/components/brand/SavingsCat.vue'
 
 type TypeFilter = 'all' | TransactionType
 type PeriodFilter = 'all' | 'this-month' | 'last-month' | '90-days' | 'custom'
@@ -47,6 +50,32 @@ const period = ref<PeriodFilter>('all')
 const fromDate = ref('')
 const toDate = ref('')
 const visibleCount = ref(20)
+
+const mobileMonthDate = ref(new Date(new Date().getFullYear(), new Date().getMonth(), 1))
+const mobileTypeTabs: Array<{ value: TypeFilter; label: string }> = [
+  { value: 'all', label: 'Semua' },
+  { value: 'income', label: 'Pemasukan' },
+  { value: 'expense', label: 'Pengeluaran' },
+]
+const mobileMonthKey = computed(() => toDateKey(mobileMonthDate.value).slice(0, 7))
+const mobileMonthLabel = computed(() => formatMonth(mobileMonthDate.value))
+const mobileTransactions = computed(() =>
+  appStore.data.transactions
+    .filter((transaction) => {
+      if (transaction.date.slice(0, 7) !== mobileMonthKey.value) return false
+      if (typeFilter.value !== 'all' && transaction.type !== typeFilter.value) return false
+      return true
+    })
+    .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt)),
+)
+
+function shiftMobileMonth(delta: number): void {
+  mobileMonthDate.value = new Date(
+    mobileMonthDate.value.getFullYear(),
+    mobileMonthDate.value.getMonth() + delta,
+    1,
+  )
+}
 
 const hideAmounts = computed(() => appStore.data.settings.hideAmounts)
 
@@ -234,6 +263,7 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
   })
   if (!confirmed) return
   if (appStore.deleteTransaction(transaction.id)) {
+    if (editingId.value === transaction.id) formOpen.value = false
     ui.notify('Transaksi berhasil dihapus.', { title: 'Transaksi dihapus' })
   }
 }
@@ -241,6 +271,104 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
 
 <template>
   <div>
+    <section class="space-y-4 lg:hidden" aria-label="Riwayat transaksi">
+      <div class="flex items-center gap-2">
+        <div class="flex flex-1 rounded-[15px] border border-line bg-surface p-1 shadow-[0_8px_22px_-24px_rgba(47,73,52,0.6)]">
+          <button
+            v-for="tab in mobileTypeTabs"
+            :key="tab.value"
+            type="button"
+            class="flex-1 rounded-[11px] px-1 py-2 text-[9.5px] font-extrabold transition-colors"
+            :class="typeFilter === tab.value ? 'bg-[#557c5b] text-white shadow-sm' : 'text-muted'"
+            @click="typeFilter = tab.value"
+          >
+            {{ tab.label }}
+          </button>
+        </div>
+        <button
+          type="button"
+          class="flex size-[43px] shrink-0 items-center justify-center rounded-[14px] bg-[#557c5b] text-white shadow-[0_10px_18px_-14px_rgba(60,93,65,0.8)] active:scale-95"
+          aria-label="Tambah transaksi"
+          @click="openAdd(typeFilter === 'income' ? 'income' : 'expense')"
+        >
+          <Plus :size="19" :stroke-width="2.3" />
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center gap-5">
+        <button
+          type="button"
+          class="flex size-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+          aria-label="Bulan sebelumnya"
+          @click="shiftMobileMonth(-1)"
+        >
+          <ChevronLeft :size="17" />
+        </button>
+        <p class="min-w-[120px] text-center text-[11px] font-extrabold text-ink">{{ mobileMonthLabel }}</p>
+        <button
+          type="button"
+          class="flex size-8 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+          aria-label="Bulan berikutnya"
+          @click="shiftMobileMonth(1)"
+        >
+          <ChevronRight :size="17" />
+        </button>
+      </div>
+
+      <div v-if="mobileTransactions.length" class="overflow-hidden rounded-[22px] border border-line bg-surface shadow-[0_12px_28px_-28px_rgba(47,73,52,0.65)]">
+        <button
+          v-for="transaction in mobileTransactions"
+          :key="transaction.id"
+          type="button"
+          class="flex w-full items-center gap-3 border-b border-line/70 px-4 py-3 text-left last:border-b-0 active:bg-surface-2/60"
+          @click="openEdit(transaction)"
+        >
+          <CategoryIcon
+            :name="findCategory(transaction.category).icon"
+            :color="findCategory(transaction.category).color"
+            box-size="md"
+            :size="18"
+          />
+          <span class="min-w-0 flex-1">
+            <span class="block truncate text-[11px] font-extrabold text-ink">{{ transaction.category }}</span>
+            <span class="mt-0.5 block truncate text-[8.5px] font-semibold text-muted">
+              {{ transaction.note || appStore.walletName(transaction.walletId) }} · {{ formatDateLong(transaction.date) }}
+            </span>
+          </span>
+          <span
+            class="shrink-0 text-[10px] font-black tabular-nums"
+            :class="transaction.type === 'income' ? 'text-success' : 'text-danger'"
+          >
+            {{ transaction.type === 'income' ? '+' : '−' }}{{ money(transaction.amount) }}
+          </span>
+        </button>
+      </div>
+
+      <div v-else class="relative overflow-hidden rounded-[24px] border border-line bg-surface px-6 py-7 text-center shadow-[0_12px_28px_-28px_rgba(47,73,52,0.65)]">
+        <div class="relative mx-auto mb-1 h-[155px] w-[205px]">
+          <span class="absolute left-1/2 top-1/2 size-[140px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#edf4df]" />
+          <svg class="absolute left-2 top-4 w-12 text-[#9ab482] opacity-75" viewBox="0 0 70 100" fill="none" aria-hidden="true">
+            <path d="M30 98c8-29 7-55-2-82" stroke="currentColor" stroke-width="1.4" />
+            <path d="M29 68C14 66 5 56 3 40c15 2 25 12 26 28ZM25 45C12 39 6 27 9 11c13 6 18 18 16 34Z" fill="currentColor" fill-opacity=".5" />
+          </svg>
+          <SavingsCat class="relative z-10 mx-auto w-[180px]" />
+        </div>
+        <h2 class="text-[14px] font-extrabold text-ink">Belum ada transaksi</h2>
+        <p class="mx-auto mt-1 max-w-[235px] text-[9px] font-semibold leading-relaxed text-muted">
+          Transaksi pemasukan dan pengeluaran yang kamu tambahkan akan muncul di sini.
+        </p>
+        <button
+          type="button"
+          class="btn btn-primary mt-4 h-10 rounded-xl px-5 text-[10px]"
+          @click="openAdd(typeFilter === 'income' ? 'income' : 'expense')"
+        >
+          <Plus :size="14" />
+          Tambah Transaksi
+        </button>
+      </div>
+    </section>
+
+    <div class="hidden lg:block">
     <PageHeader
       title="Transaksi"
       subtitle="Pisahkan uang masuk dan keluar dari alokasi tabungan agar laporan tetap akurat."
@@ -540,6 +668,8 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
       </p>
     </div>
 
+    </div>
+
     <BaseModal
       :open="formOpen"
       :title="editingId ? 'Edit transaksi' : 'Tambah transaksi'"
@@ -643,6 +773,16 @@ async function remove(transaction: FinanceTransaction): Promise<void> {
       </div>
 
       <template #footer>
+        <button
+          v-if="editingTransaction"
+          type="button"
+          class="btn btn-danger sm:mr-auto"
+          :disabled="saving"
+          @click="remove(editingTransaction)"
+        >
+          <Trash2 :size="15" />
+          Hapus
+        </button>
         <button type="button" class="btn btn-secondary" :disabled="saving" @click="formOpen = false">Batal</button>
         <button type="button" class="btn btn-primary" :disabled="saving" @click="save">
           <LoaderCircle v-if="saving" :size="16" class="animate-spin" />

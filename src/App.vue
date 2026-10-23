@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import { AlertTriangle, LoaderCircle, RefreshCw, ShieldCheck, Sparkles } from '@lucide/vue'
 import { useAppStore } from '@/stores/app'
@@ -12,9 +12,11 @@ import ConfirmHost from '@/components/ui/ConfirmHost.vue'
 import DepositModal from '@/components/deposits/DepositModal.vue'
 import BrandMark from '@/components/brand/BrandMark.vue'
 import BotanicalDecor from '@/components/brand/BotanicalDecor.vue'
+import AuthBackdrop from '@/components/brand/AuthBackdrop.vue'
 
 const appStore = useAppStore()
 const route = useRoute()
+const isPublic = computed(() => route.meta.public === true)
 useTheme()
 
 onMounted(() => {
@@ -32,10 +34,22 @@ function reloadPage(): void {
 
 <template>
   <div class="relative isolate min-h-dvh bg-app-gradient text-ink">
-    <BotanicalDecor />
+    <template v-if="isPublic">
+      <div class="relative min-h-dvh overflow-hidden bg-[#f8faef]">
+        <AuthBackdrop />
+        <RouterView v-slot="{ Component }">
+          <Transition name="page" mode="out-in">
+            <component :is="Component" :key="route.path" />
+          </Transition>
+        </RouterView>
+      </div>
+    </template>
 
-    <div
-      v-if="appStore.loading"
+    <template v-else>
+      <BotanicalDecor />
+
+      <div
+        v-if="appStore.loading"
       class="relative flex min-h-dvh flex-col items-center justify-center px-5 py-10"
       role="status"
       aria-live="polite"
@@ -121,7 +135,7 @@ function reloadPage(): void {
             </Transition>
           </RouterView>
 
-          <footer class="mt-8 flex flex-col items-center justify-between gap-2 border-t border-line/70 py-5 text-center sm:flex-row sm:text-left">
+          <footer class="mt-8 hidden flex-col items-center justify-between gap-2 border-t border-line/70 py-5 text-center sm:flex-row sm:text-left lg:flex">
             <p class="text-[10px] font-semibold text-muted">
               Tabungin · celengan impianmu, dikelola sepenuhnya di perangkat ini.
             </p>
@@ -135,9 +149,10 @@ function reloadPage(): void {
 
       <MobileNav />
     </template>
+    </template>
 
     <ToastHost />
     <ConfirmHost />
-    <DepositModal v-if="!appStore.loading && !appStore.fatalError" />
+    <DepositModal v-if="!isPublic && !appStore.loading && !appStore.fatalError" />
   </div>
 </template>

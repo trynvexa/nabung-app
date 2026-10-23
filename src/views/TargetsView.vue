@@ -31,6 +31,7 @@ import PhotoThumb from '@/components/ui/PhotoThumb.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import ConfettiBurst from '@/components/ui/ConfettiBurst.vue'
 import DepositDetailModal from '@/components/deposits/DepositDetailModal.vue'
+import SavingsCat from '@/components/brand/SavingsCat.vue'
 
 const appStore = useAppStore()
 const ui = useUiStore()
@@ -72,6 +73,27 @@ const selectedTargetId = ref<string>()
 const detailOpen = ref(false)
 const selectedDepositId = ref<string>()
 const depositDetailOpen = ref(false)
+
+type MobileTargetFilter = 'all' | 'active' | 'done'
+const mobileTargetFilter = ref<MobileTargetFilter>('all')
+const mobileFilterTabs: Array<{ value: MobileTargetFilter; label: string }> = [
+  { value: 'all', label: 'Semua' },
+  { value: 'active', label: 'Aktif' },
+  { value: 'done', label: 'Selesai' },
+]
+const mobileTargets = computed(() =>
+  [...appStore.targetCards]
+    .filter((entry) => {
+      if (mobileTargetFilter.value === 'active') return !entry.progress.isComplete
+      if (mobileTargetFilter.value === 'done') return entry.progress.isComplete
+      return true
+    })
+    .sort((a, b) => {
+      if (a.progress.isComplete !== b.progress.isComplete) return a.progress.isComplete ? 1 : -1
+      const rank: Record<TargetPriority, number> = { high: 0, medium: 1, low: 2 }
+      return rank[a.target.priority] - rank[b.target.priority]
+    }),
+)
 
 const selectedEntry = computed(() =>
   selectedTargetId.value
@@ -259,6 +281,108 @@ async function deleteLinkedDeposit(id: string): Promise<void> {
 
 <template>
   <div>
+    <section class="space-y-4 lg:hidden" aria-label="Target tabungan">
+      <div class="flex rounded-[15px] border border-line bg-surface p-1 shadow-[0_8px_22px_-24px_rgba(47,73,52,0.6)]">
+        <button
+          v-for="tab in mobileFilterTabs"
+          :key="tab.value"
+          type="button"
+          class="flex-1 rounded-[11px] py-2 text-[10px] font-extrabold transition-colors"
+          :class="
+            mobileTargetFilter === tab.value
+              ? 'bg-[#557c5b] text-white shadow-sm'
+              : 'text-muted'
+          "
+          @click="mobileTargetFilter = tab.value"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
+
+      <div v-if="mobileTargets.length" class="space-y-3">
+        <button
+          v-for="(entry, index) in mobileTargets"
+          :key="entry.target.id"
+          type="button"
+          class="block w-full rounded-[20px] border border-line bg-surface px-4 py-3.5 text-left shadow-[0_10px_26px_-26px_rgba(47,73,52,0.6)] transition-transform active:scale-[0.99]"
+          @click="openDetail(entry.target.id)"
+        >
+          <div class="flex items-center gap-3">
+            <TargetIcon
+              :name="entry.target.icon"
+              :color="entry.progress.isComplete ? '#5B9563' : targetColor(index)"
+              box-size="md"
+              :size="19"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <p class="truncate text-[12px] font-extrabold text-ink">{{ entry.target.name }}</p>
+                <CheckCircle2 v-if="entry.progress.isComplete" :size="13" class="shrink-0 text-success" />
+                <ShieldCheck v-if="entry.target.isEmergencyFund" :size="12" class="shrink-0 text-success" />
+              </div>
+              <p class="mt-0.5 text-[8.5px] font-semibold text-muted">
+                {{ money(entry.progress.saved) }} dari {{ money(entry.target.targetAmount) }}
+              </p>
+            </div>
+            <span class="shrink-0 text-[11px] font-black" :class="entry.progress.isComplete ? 'text-success' : 'text-[#557c5b]'">
+              {{ formatPercent(entry.progress.percent) }}
+            </span>
+          </div>
+
+          <ProgressBar
+            class="mt-2.5"
+            :value="entry.progress.percent"
+            :tone="entry.progress.isComplete ? 'success' : 'primary'"
+            height="xs"
+            :aria-label="`Progres ${entry.target.name}`"
+          />
+
+          <div class="mt-2 flex items-center justify-between gap-2 text-[8.5px] font-semibold text-muted">
+            <span class="flex items-center gap-1">
+              <CalendarDays :size="10" />
+              {{ deadlineLabel(entry.target.deadline) }}
+            </span>
+            <span>{{ entry.progress.isComplete ? 'Tercapai' : `Sisa ${money(entry.progress.remaining)}` }}</span>
+          </div>
+        </button>
+      </div>
+
+      <div v-else class="rounded-[22px] border border-dashed border-line bg-surface px-5 py-8 text-center">
+        <span class="mx-auto flex size-12 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+          <TargetIconLucide :size="23" />
+        </span>
+        <p class="mt-3 text-[12px] font-extrabold text-ink">
+          {{
+            mobileTargetFilter === 'done'
+              ? 'Belum ada target selesai'
+              : mobileTargetFilter === 'active'
+                ? 'Tidak ada target aktif'
+                : 'Belum ada target tabungan'
+          }}
+        </p>
+        <p class="mx-auto mt-1 max-w-[240px] text-[9px] font-semibold leading-relaxed text-muted">
+          Mulai dari impian kecil yang paling kamu inginkan. Setiap langkah berarti.
+        </p>
+      </div>
+
+      <button type="button" class="btn btn-primary h-12 w-full justify-center text-[12px]" @click="openAdd">
+        <Plus :size="16" :stroke-width="2.4" />
+        Buat Target Baru
+      </button>
+
+      <div class="relative overflow-hidden rounded-[22px] bg-[#eaf2dd] px-4 py-4">
+        <div class="relative z-10 max-w-[68%]">
+          <p class="text-[12px] font-black leading-snug text-[#3f6047]">Sedikit demi sedikit,</p>
+          <p class="text-[12px] font-black leading-snug text-[#3f6047]">menuju mimpi besar!</p>
+          <p class="mt-1.5 text-[8.5px] font-semibold leading-relaxed text-[#71806d]">
+            Setiap setoran kecil membawa kamu lebih dekat ke tujuan.
+          </p>
+        </div>
+        <SavingsCat class="absolute -bottom-7 -right-3 w-[112px] opacity-95" />
+      </div>
+    </section>
+
+    <div class="hidden lg:block">
     <PageHeader
       title="Target Tabungan"
       subtitle="Tentukan tujuan, pecah jadi langkah kecil, lalu rayakan setiap kemajuannya."
@@ -487,6 +611,8 @@ async function deleteLinkedDeposit(id: string): Promise<void> {
           Buat target
         </button>
       </EmptyState>
+    </div>
+
     </div>
 
     <BaseModal

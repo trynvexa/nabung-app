@@ -11,6 +11,7 @@ import {
   Eye,
   EyeOff,
   Flame,
+  LayoutGrid,
   PiggyBank,
   Plus,
   ReceiptText,
@@ -24,7 +25,7 @@ import {
 import { useAppStore } from '@/stores/app'
 import { useUiStore } from '@/stores/ui'
 import { comparePercent } from '@/lib/calc'
-import { daysBetween, formatDateLong, formatMonth, greetingForNow, parseDate, todayKey } from '@/lib/date'
+import { daysBetween, formatDateLong, formatMonth, formatRelative, greetingForNow, parseDate, todayKey } from '@/lib/date'
 import { formatCurrency, formatPercent } from '@/lib/format'
 import PageHeader from '@/components/ui/PageHeader.vue'
 import AnimatedNumber from '@/components/ui/AnimatedNumber.vue'
@@ -89,6 +90,45 @@ const dashboardTargets = computed(() =>
     })
     .slice(0, 3),
 )
+
+const mobileTarget = computed(() => dashboardTargets.value[0])
+
+const mobileActivities = computed(() => {
+  const deposits = appStore.data.deposits.map((deposit) => ({
+    id: `deposit-${deposit.id}`,
+    recordId: deposit.id,
+    kind: 'deposit' as const,
+    title: appStore.targetName(deposit.targetId),
+    category: 'Tabungan',
+    icon: 'PiggyBank',
+    color: '#5F8563',
+    amount: deposit.amount,
+    positive: true,
+    date: deposit.date,
+    to: '/setoran',
+    timestamp: parseDate(deposit.date).getTime(),
+  }))
+  const transactions = appStore.data.transactions.map((transaction) => {
+    const category = findCategory(transaction.category)
+    return {
+      id: `transaction-${transaction.id}`,
+      recordId: transaction.id,
+      kind: 'transaction' as const,
+      title: transaction.note || transaction.category,
+      category: transaction.category,
+      icon: category.icon,
+      color: category.color,
+      amount: transaction.amount,
+      positive: transaction.type === 'income',
+      date: transaction.date,
+      to: '/transaksi',
+      timestamp: parseDate(transaction.date).getTime(),
+    }
+  })
+  return [...deposits, ...transactions]
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 3)
+})
 
 const budgetPreview = computed(() =>
   [...appStore.currentBudgetStatuses].sort((a, b) => b.percent - a.percent).slice(0, 3),
@@ -217,6 +257,190 @@ async function markReminderPaid(billId: string): Promise<void> {
 
 <template>
   <div>
+    <section class="space-y-4 lg:hidden" aria-label="Beranda">
+      <div class="px-1 pt-1">
+        <h1 class="text-[23px] font-black leading-tight tracking-[-0.04em] text-ink">
+          Halo, {{ firstName }}! <span class="text-[20px]">👋</span>
+        </h1>
+        <p class="mt-1 text-[10px] font-semibold leading-relaxed text-muted">
+          Yuk, lanjutkan kebiasaan menabungmu hari ini.
+        </p>
+      </div>
+
+      <section class="hero-surface relative overflow-hidden rounded-[26px] p-5 text-white shadow-[0_24px_44px_-28px_rgba(47,80,55,0.75)]">
+        <div class="pointer-events-none absolute -right-10 -top-14 size-44 rounded-full border border-white/10" />
+        <div class="pointer-events-none absolute right-7 top-8 size-24 rounded-full border border-white/10" />
+        <SavingsCat class="pointer-events-none absolute -bottom-6 -right-5 w-[162px] drop-shadow-[0_16px_18px_rgba(21,45,27,0.25)]" />
+
+        <div class="relative z-10 max-w-[67%]">
+          <span class="inline-flex items-center gap-1.5 text-[9px] font-bold text-white/80">
+            <PiggyBank :size="12" />
+            Total Tabungan
+          </span>
+          <p class="mt-2 whitespace-nowrap text-[27px] font-black leading-none tracking-[-0.045em]">
+            {{ money(appStore.totalSaved) }}
+          </p>
+          <p class="mt-1.5 text-[9px] font-semibold text-white/65">
+            Dari {{ appStore.data.deposits.length }} setoran · {{ appStore.streak }} hari beruntun
+          </p>
+          <RouterLink
+            to="/setoran"
+            class="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3.5 py-2 text-[9px] font-extrabold text-[#416248] shadow-sm transition-transform active:scale-95"
+          >
+            Lihat Detail
+            <ArrowRight :size="12" />
+          </RouterLink>
+        </div>
+      </section>
+
+      <div class="grid grid-cols-4 gap-2">
+        <button
+          type="button"
+          class="flex min-w-0 flex-col items-center gap-2 rounded-[18px] border border-line bg-surface px-1 py-3 shadow-[0_8px_20px_-20px_rgba(47,73,52,0.55)] transition-transform active:scale-95"
+          @click="ui.openDeposit()"
+        >
+          <span class="flex size-9 items-center justify-center rounded-[13px] bg-[#e9f1e4] text-[#557c5b]">
+            <Plus :size="18" :stroke-width="2.2" />
+          </span>
+          <span class="text-center text-[8.5px] font-bold leading-[1.2] text-ink-soft">Tambah Tabungan</span>
+        </button>
+        <RouterLink
+          to="/target"
+          class="flex min-w-0 flex-col items-center gap-2 rounded-[18px] border border-line bg-surface px-1 py-3 shadow-[0_8px_20px_-20px_rgba(47,73,52,0.55)] transition-transform active:scale-95"
+        >
+          <span class="flex size-9 items-center justify-center rounded-[13px] bg-[#f1edf6] text-[#7b6a8f]">
+            <TargetIconLucide :size="17" :stroke-width="2" />
+          </span>
+          <span class="text-center text-[8.5px] font-bold leading-[1.2] text-ink-soft">Buat Target</span>
+        </RouterLink>
+        <RouterLink
+          to="/transaksi"
+          class="flex min-w-0 flex-col items-center gap-2 rounded-[18px] border border-line bg-surface px-1 py-3 shadow-[0_8px_20px_-20px_rgba(47,73,52,0.55)] transition-transform active:scale-95"
+        >
+          <span class="flex size-9 items-center justify-center rounded-[13px] bg-[#fbf1d9] text-[#9b742c]">
+            <ReceiptText :size="17" :stroke-width="2" />
+          </span>
+          <span class="text-center text-[8.5px] font-bold leading-[1.2] text-ink-soft">Riwayat</span>
+        </RouterLink>
+        <RouterLink
+          to="/profil"
+          class="flex min-w-0 flex-col items-center gap-2 rounded-[18px] border border-line bg-surface px-1 py-3 shadow-[0_8px_20px_-20px_rgba(47,73,52,0.55)] transition-transform active:scale-95"
+        >
+          <span class="flex size-9 items-center justify-center rounded-[13px] bg-[#eef0eb] text-[#687663]">
+            <LayoutGrid :size="17" :stroke-width="2" />
+          </span>
+          <span class="text-center text-[8.5px] font-bold leading-[1.2] text-ink-soft">Lainnya</span>
+        </RouterLink>
+      </div>
+
+      <section class="space-y-2.5">
+        <div class="flex items-center justify-between px-1">
+          <h2 class="text-[14px] font-black tracking-[-0.025em] text-ink">Target Tabungan</h2>
+          <RouterLink to="/target" class="flex items-center gap-0.5 text-[9px] font-extrabold text-[#557c5b]">
+            Lihat Semua
+            <ChevronRight :size="12" />
+          </RouterLink>
+        </div>
+
+        <RouterLink
+          v-if="mobileTarget"
+          :to="'/target'"
+          class="block rounded-[20px] border border-line bg-surface px-4 py-3.5 shadow-[0_10px_26px_-26px_rgba(47,73,52,0.6)]"
+        >
+          <div class="flex items-center gap-3">
+            <TargetIcon
+              :name="mobileTarget.target.icon"
+              :color="mobileTarget.progress.isComplete ? '#5B9563' : '#5F8563'"
+              box-size="md"
+              :size="20"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <p class="truncate text-[12px] font-extrabold text-ink">{{ mobileTarget.target.name }}</p>
+                <span class="shrink-0 text-[11px] font-black text-[#557c5b]">
+                  {{ formatPercent(mobileTarget.progress.percent) }}
+                </span>
+              </div>
+              <div class="mt-1 flex items-center justify-between gap-2 text-[8.5px] font-semibold text-muted">
+                <span>{{ money(mobileTarget.progress.saved) }} dari {{ money(mobileTarget.target.targetAmount) }}</span>
+                <span v-if="mobileTarget.progress.isComplete" class="font-bold text-success">Tercapai</span>
+              </div>
+            </div>
+          </div>
+          <ProgressBar
+            class="mt-3"
+            :value="mobileTarget.progress.percent"
+            :tone="mobileTarget.progress.isComplete ? 'success' : 'primary'"
+            height="xs"
+            :aria-label="`Progres ${mobileTarget.target.name}`"
+          />
+        </RouterLink>
+
+        <RouterLink
+          v-else
+          to="/target"
+          class="flex items-center gap-3 rounded-[20px] border border-dashed border-line bg-surface/70 px-4 py-4"
+        >
+          <span class="flex size-10 items-center justify-center rounded-xl bg-primary-soft text-primary">
+            <TargetIconLucide :size="18" />
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[11px] font-extrabold text-ink">Belum ada target</span>
+            <span class="mt-0.5 block text-[9px] font-semibold text-muted">Mulai dari impian kecilmu hari ini.</span>
+          </span>
+          <ChevronRight :size="15" class="text-muted" />
+        </RouterLink>
+      </section>
+
+      <section class="space-y-2.5 pb-2">
+        <div class="flex items-center justify-between px-1">
+          <h2 class="text-[14px] font-black tracking-[-0.025em] text-ink">Aktivitas Terbaru</h2>
+          <RouterLink to="/transaksi" class="flex items-center gap-0.5 text-[9px] font-extrabold text-[#557c5b]">
+            Lihat Semua
+            <ChevronRight :size="12" />
+          </RouterLink>
+        </div>
+
+        <div v-if="mobileActivities.length" class="overflow-hidden rounded-[20px] border border-line bg-surface shadow-[0_10px_26px_-26px_rgba(47,73,52,0.6)]">
+          <RouterLink
+            v-for="activity in mobileActivities"
+            :key="activity.id"
+            :to="activity.to"
+            class="flex items-center gap-3 border-b border-line/70 px-4 py-3 last:border-b-0"
+          >
+            <span v-if="activity.kind === 'deposit'" class="flex size-10 shrink-0 items-center justify-center rounded-[13px] bg-[#e9f1e4] text-[#557c5b]">
+              <PiggyBank :size="17" />
+            </span>
+            <CategoryIcon
+              v-else
+              :name="activity.icon"
+              :color="activity.color"
+              box-size="md"
+              :size="18"
+            />
+            <span class="min-w-0 flex-1">
+              <span class="block truncate text-[11px] font-extrabold text-ink">{{ activity.title }}</span>
+              <span class="mt-0.5 block truncate text-[8.5px] font-semibold text-muted">
+                {{ activity.category }} · {{ formatRelative(activity.date) }}
+              </span>
+            </span>
+            <span
+              class="shrink-0 text-[10px] font-black tabular-nums"
+              :class="activity.positive ? 'text-success' : 'text-danger'"
+            >
+              {{ activity.positive ? '+' : '−' }}{{ money(activity.amount) }}
+            </span>
+          </RouterLink>
+        </div>
+
+        <div v-else class="rounded-[20px] border border-line bg-surface px-4 py-5 text-center">
+          <p class="text-[11px] font-extrabold text-ink">Belum ada aktivitas</p>
+          <p class="mt-1 text-[9px] font-semibold text-muted">Setoran atau transaksi barumu akan muncul di sini.</p>
+        </div>
+      </section>
+    </section>
+
+    <div class="hidden lg:block">
     <PageHeader
       :title="`${greetingForNow()}, ${firstName}`"
       subtitle="Ini ringkasan keuanganmu hari ini. Kecil-kecil konsisten, lama-lama jadi besar."
@@ -773,6 +997,7 @@ async function markReminderPaid(billId: string): Promise<void> {
         </RouterLink>
       </div>
     </section>
+    </div>
 
     <DepositDetailModal
       :open="depositDetailOpen"
